@@ -28,7 +28,7 @@ public class QueryData implements Serializable {
 	@Column(name = "parameter")
 	private String parameter;
 
-	@Column(name = "columnNames")
+	@Column(name = "columnnames")
 	private String columnNames;
 
 	@Column(name = "qry")

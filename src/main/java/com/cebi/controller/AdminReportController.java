@@ -1,6 +1,7 @@
 package com.cebi.controller;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -422,7 +423,7 @@ public class AdminReportController {
 		try {
 			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 			String date = dtf.format(LocalDateTime.now());
-			BigInteger count = adminReportService.getReportQueueStatusCount(bank, date);
+			BigDecimal count = adminReportService.getReportQueueStatusCount(bank, date);
 			if(count.intValue()<4){
 		     downloadQueueResponse = adminReportService.commonDownloadQueue(queryData,bank,master);
 			}else{

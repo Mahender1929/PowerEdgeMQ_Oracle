@@ -11,9 +11,11 @@ import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.cebi.dao.AdminReportDao;
 import com.cebi.dao.AdminReportDaoImpl;
 import com.cebi.dao.ApplicationLabelDao;
 import com.cebi.entity.ApplicationLabel;
+import com.cebi.entity.Banks;
 import com.cebi.entity.QueryData;
 import com.cebi.service.GenerateCheckDigitService;
 import com.itextpdf.text.BaseColor;
@@ -38,6 +40,9 @@ public class PdfUtils {
 	
 	@Autowired
 	ApplicationLabelDao applicationLabelDao;
+	
+	@Autowired
+	AdminReportDao adminReportDao;
 
 	public String populateQuery(QueryData table, String parameter, String criteria) {
 		String sql = "Select ";
@@ -285,6 +290,11 @@ public class PdfUtils {
 	 * cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 	 * cell.setBorderColor(BaseColor.LIGHT_GRAY); return cell; }
 	 */
+	public String getBankName(String bankcd) {
+		Banks bankdata = adminReportDao.retreiveDbConnection(bankcd);
+		bankdata.getBankName();
+	 	return bankdata.getBankName().trim();
+	}
 	public String getTableNames(String table) {
 		 List<ApplicationLabel> lables=applicationLabelDao.retrieveAllLabels();
 		 String tableName=null;

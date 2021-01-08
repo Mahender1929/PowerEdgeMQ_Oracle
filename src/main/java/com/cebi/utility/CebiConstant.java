@@ -124,6 +124,8 @@ public class CebiConstant {
 	public static final String COMPLETED="COMPLETED";
 	public static final String IN_PROCESS="INPROCESS";
 	public static final String IN_QUEUE="IN_QUEUE";
+
+	public static final String SPACE = " 							";
 	public Session getCurrentSession(String bank, Banks db) {
 		Session session = null;
 		session = HibernateUtil.getSessionFactory(db).openSession();

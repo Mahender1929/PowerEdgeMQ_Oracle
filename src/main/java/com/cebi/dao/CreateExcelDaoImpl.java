@@ -18,6 +18,8 @@ import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.hibernate.Session;
 import org.hibernate.internal.SessionImpl;
@@ -55,6 +57,10 @@ public class CreateExcelDaoImpl extends PdfUtils implements CreateExcelDao {
 		PreparedStatement prepareStatement = null;
 		HSSFWorkbook wb = new HSSFWorkbook();
 		HSSFSheet sheet = wb.createSheet();
+		
+		//SXSSFWorkbook wb = new SXSSFWorkbook(); 
+		//Sheet sheet = wb.createSheet();         
+
 
 		HSSFCellStyle cellStyle = wb.createCellStyle();
 		cellStyle.setWrapText(true);

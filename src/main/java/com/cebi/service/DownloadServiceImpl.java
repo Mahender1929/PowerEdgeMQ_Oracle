@@ -35,7 +35,7 @@ public class DownloadServiceImpl implements DownloadService {
 
 	@Override
 	public List<ReportDownload> getReportStatus(ReportDownload reportDownload) {
-		String TBL_GET_STS_Q = "SELECT id,fileName,queuedataid,status,timeadded,timecomplete FROM reportqueuetable WHERE bank = ? and DATE(timeadded) = ?";
+		String TBL_GET_STS_Q = "SELECT id,fileName,queuedataid,status,timeadded,timecomplete FROM reportqueuetable WHERE bank = ? and to_char(timeadded,'DD-MM-YYYY') = ?";
 		Connection connection = null;
 		PreparedStatement prepareStatement = null;
 		ResultSet resultSet = null;

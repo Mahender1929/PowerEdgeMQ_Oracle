@@ -1,5 +1,6 @@
 package com.cebi.dao;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -47,7 +48,7 @@ public interface AdminReportDao {
 
 	public List<Object[]> replaceCriteriaField(String table);
 
-	public BigInteger getReportQueueStatusCount(String bank, String date);
+	public BigDecimal getReportQueueStatusCount(String bank, String date);
 
 	public  LinkedHashMap<String, Integer> getTotalCount(String bankCode);
 

@@ -18,13 +18,13 @@ public class ViewInfo {
 	private Integer id;
 	@Column(name = "view_name")
 	private String viewName;
-	@Column(name = "view")
+	@Column(name = "view_")
 	private String view;
 	@Column(name = "status")
 	private String status;
 	@Column(name = "type")
 	private String type;
-	@Column(name = "access")
+	@Column(name = "access_")
 	private Integer access;
 	@Column(name = "description")
 	private String description;

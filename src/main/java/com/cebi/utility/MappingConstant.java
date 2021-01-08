@@ -22,8 +22,8 @@ public class MappingConstant {
 	public static final String SHOW_CHART_DETAILS = "/showchartDetails";
 	public static final String SHOW_CHART_RESULT = "/showchartResult";
 	public static final String LANDING_DEFAULT_PAGE = "/landingDefaultPage";
-	public static final String BANK_REPORT_LOCATION= "/bancedge/PowerEdgeMQ/";
-	//public static final String BANK_REPORT_LOCATION= "D:/Mahender/CEBI_MQ_Repots/";
+	//public static final String BANK_REPORT_LOCATION= "/bancedge/PowerEdgeMQ/";
+	public static final String BANK_REPORT_LOCATION= "D:/Mahender/CEBI_MQ_Repots/";
 	public static final String STATIC_REPORT = "/staticreport";
 	public static final String SA_5 = "/sa-5";
 	public static final String HELP = "/help";

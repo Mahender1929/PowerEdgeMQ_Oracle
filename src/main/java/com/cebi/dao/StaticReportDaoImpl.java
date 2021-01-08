@@ -35,12 +35,12 @@ public class StaticReportDaoImpl {
 	ApplicationLabelDao applicationLabelDao;
 
 	public List<String> getAllTables() {
-		return sessionFactory.getCurrentSession().createSQLQuery("SELECT distinct `tablename`   FROM `statictablemetadata`").list();
+		return sessionFactory.getCurrentSession().createSQLQuery("SELECT distinct tablename  FROM statictablemetadata").list();
 	}
 
 	public List<ColumnNames> getColumnByTable(String table) {
 
-		String TBL_GET_CLM_QRY = "SELECT `columnname`,`datatype`  FROM `statictablemetadata` WHERE  `tablename`=:tablename ORDER BY `columnname`";
+		String TBL_GET_CLM_QRY = "SELECT columnname,datatype  FROM statictablemetadata WHERE tablename=:tablename ORDER BY columnname";
 		ColumnNames columnName = null;
 		Connection connection = null;
 		PreparedStatement prepareStatement = null;
@@ -92,29 +92,29 @@ public class StaticReportDaoImpl {
 	}
 
 	public List<String> getOriginalData(String data, String tableName) {
-		return sessionFactory.getCurrentSession().createSQLQuery(" SELECT `columnlabel` FROM `statictablemetadata` WHERE tableName= '" + tableName + "' and `columnname` IN ('" + data + "')").list();
+		return sessionFactory.getCurrentSession().createSQLQuery(" SELECT columnlabel FROM statictablemetadata WHERE tableName= '" + tableName + "' and columnname IN ('" + data + "')").list();
 	}
 
 	public List<Object[]> getOriginalDatamap(String data) {
-		return sessionFactory.getCurrentSession().createSQLQuery(" SELECT  `columnname`, `columnlabel` FROM `statictablemetadata` ").list();
+		return sessionFactory.getCurrentSession().createSQLQuery(" SELECT  columnname,columnlabel FROM statictablemetadata ").list();
 	}
 
 	public String checkQueryType(String table) {
-		return (String) sessionFactory.getCurrentSession().createSQLQuery("SELECT COUNT(1) FROM `statictablemetadata` WHERE `tablename`='" + table + "'").uniqueResult().toString();
+		return (String) sessionFactory.getCurrentSession().createSQLQuery("SELECT COUNT(1) FROM statictablemetadata WHERE tablename='" + table + "'").uniqueResult().toString();
 
 	}
 
 	public List<Object[]> getMandatoryField(String table) {
-		return (List<Object[]>) sessionFactory.getCurrentSession().createSQLQuery("SELECT `requiredFilledValue`,mandatoryColumnName  FROM `statictablemetadata` WHERE  `isRequired` ='M' and tablename='" + table + "'").list();
+		return (List<Object[]>) sessionFactory.getCurrentSession().createSQLQuery("SELECT requiredFilledValue,mandatoryColumnName  FROM statictablemetadata WHERE  isRequired = 'M'and tablename='" + table + "'").list();
 	}
 
 	public List<String> getLocalViewFromDb() {
-		System.out.println("SELECT DISTINCT `tablename` FROM `statictablemetadata`");
-		return (List<String>) sessionFactory.getCurrentSession().createSQLQuery("SELECT DISTINCT `tablename` FROM `statictablemetadata` ").list();
+		System.out.println("SELECT DISTINCT tablename FROM statictablemetadata");
+		return (List<String>) sessionFactory.getCurrentSession().createSQLQuery("SELECT DISTINCT tablename FROM statictablemetadata ").list();
 	}
 
 	public RequiredField populateManFields(String table) {
-		String str = (String) sessionFactory.getCurrentSession().createSQLQuery("SELECT `columnname` FROM `statictablemetadata` WHERE `isRequired` = 'M' and tablename = '"+table+"'" ).list().stream().collect(Collectors.joining(","));
+		String str = (String) sessionFactory.getCurrentSession().createSQLQuery("SELECT columnname FROM statictablemetadata WHERE isRequired = 'M' and tablename = '"+table+"'" ).list().stream().collect(Collectors.joining(","));
 		RequiredField requiredField = new RequiredField();
 		requiredField.setFiled(str);
 		return requiredField;

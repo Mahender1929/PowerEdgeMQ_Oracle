@@ -69,8 +69,9 @@ function addToFilter() {
 		if (DD1 == 'ACCT_NO') {
 			var temp = $("#iptext").val();
 			if(!($("#s2 option:selected").text() == 'Middle Like'))
-			ipVal = temp.substring(0, temp.length - 1).pad('0', 16);
-			else
+			//ipVal = temp.substring(0, temp.length - 1).pad('0', 16);
+				ipVal = temp.substring(0, temp.length);
+				else
 				ipVal=temp;
 		} else
 			ipVal = $("#iptext").val();

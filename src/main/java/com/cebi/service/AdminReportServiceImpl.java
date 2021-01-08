@@ -1,6 +1,6 @@
 package com.cebi.service;
 
-import java.math.BigInteger;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -243,7 +243,7 @@ public class AdminReportServiceImpl implements AdminReportService {
     }
 
 	@Override
-	public BigInteger getReportQueueStatusCount(String bank, String date) {
+	public BigDecimal getReportQueueStatusCount(String bank, String date) {
 		return adminReportDao.getReportQueueStatusCount(bank, date);
 	}
 
