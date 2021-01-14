@@ -134,10 +134,10 @@ overflow:hidden;}
 							</button>
 
                          <!-- Queue download page Button -->
-						  <a href="${pageContext.request.contextPath}/downloadreportPage"><button id="dwld" style="margin-top:3px;" class="btn btn-success">
+						<%--   <a href="${pageContext.request.contextPath}/downloadreportPage"><button id="dwld" style="margin-top:3px;" class="btn btn-success">
 						 <i class="glyphicon glyphicon-download-alt"></i>&nbsp;Downloads
 						 </button>
-						  </a>
+						  </a> --%>
 
 							<div class="clearfix"></div>
 							<span id="message"></span>

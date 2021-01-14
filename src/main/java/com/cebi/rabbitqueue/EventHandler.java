@@ -1,7 +1,7 @@
-package com.cebi.rabbitqueue;
+/*package com.cebi.rabbitqueue;
 
 public class EventHandler {
-    public static void handler(Events event, Object message) {/*
+    public static void handler(Events event, Object message) {
         switch (event) {
         case Event1:
             System.out.println("publish 1 event" + message);
@@ -10,5 +10,5 @@ public class EventHandler {
             System.out.println("publish event 2" + message);
             break;
         }
-    */}
-}
+    }
+}*/

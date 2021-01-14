@@ -560,9 +560,9 @@ function submitCf(e) {
 																	node,
 																	config) {
 																e.preventDefault();
-																value="excel";
-																click :createQueue(value);
-																//$("#excelForm").submit();
+																//value="excel";
+																//click :createQueue(value);
+																$("#excelForm").submit();
 															}
 														},
 														{
@@ -572,9 +572,9 @@ function submitCf(e) {
 																	node,
 																	config) {
 																e.preventDefault();
-																value="csv";
-																click :createQueue(value);
-																//$("#csvForm").submit();
+																//value="csv";
+																//click :createQueue(value);
+																$("#csvForm").submit();
 															}
 														},
 														{
@@ -584,9 +584,9 @@ function submitCf(e) {
 																	node,
 																	config) {
 																e.preventDefault();
-																value="csvpipe";
-																click :createQueue(value);
-																//$("#pipecsvForm").submit();
+																//value="csvpipe";
+																//click :createQueue(value);
+																$("#pipecsvForm").submit();
 															}
 														},
 														{
@@ -596,9 +596,9 @@ function submitCf(e) {
 																	node,
 																	config) {
 																e.preventDefault();
-																value="text";
-																click :createQueue(value);
-																//$("#pdfForm").submit();
+																//value="text";
+																//click :createQueue(value);
+																$("#pdfForm").submit();
 															}
 														},
 														{

@@ -160,15 +160,14 @@ public class AdminReportController {
 		    tellerMaster.setBankCode(bankCode);
 		    tellerMaster.setCcdp(ccdp);
 		    tellerMaster.setTellertype(tellertype);
-
 		    if (branchIp.contains(".")) {
-		    	branchIp = branchIp.substring(0, branchIp.lastIndexOf('.'));
-				if (!(branchIp.equalsIgnoreCase("10.233.223"))) {
-					logger.info(remoteAddr);
-				    ipAddress = true;
-				    break;
+				branchIp = branchIp.substring(0, branchIp.lastIndexOf('.'));
+				if (branchIp.equalsIgnoreCase(remoteAddr)) {
+			   		logger.info(remoteAddr);
+					ipAddress = true;
+					break;
 				}
-		    }else {
+			}else {
 			session.setAttribute("bank", tellerMaster.getBankCode());
 			session.setAttribute("user", tellerMaster.getTellerid());
 			session.setAttribute(CebiConstant.BANK_CODE, tellerMaster.getBankCode());
@@ -177,43 +176,47 @@ public class AdminReportController {
 			page = "landing";
 		    }
 		}
-		if (ipAddress) {
-		    boolean flag;
-		    try {
-			flag = loginService.runScript(tellerMaster.getBankCode());
+				if (ipAddress) {
+					boolean flag;
+					try {
+						flag = loginService.runScript(tellerMaster.getBankCode());
 
-			if (!flag) {
-			    model.addAttribute("LOGIN_ERROR", "Table Or view Does Not create");
-			}
-			Banks banks =adminReportService.populateBankDbDetail(tellerMaster.getBankCode());
-			tellerMaster.setIp(banks.getDatabaseUrl());
-			session.setAttribute("dburl", banks.getDatabaseUrl());
-			session.setAttribute("bank", banks.getBankCode());
-			session.setAttribute("user", tellerMaster.getTellerid());
-			session.setAttribute(CebiConstant.BANK_CODE, tellerMaster.getBankCode());
-			session.setAttribute("isCCdp", tellerMaster.isCcdp());
-			session.setAttribute("bnkname", tellerMaster.getBankName());
-			session.setAttribute("tellertype", tellerMaster.getTellertype());
-			List<TableMetaData> tables = adminTableMetaDataService.retrieveDbTables(tellerMaster.getBankCode());
-			if (!tables.isEmpty()) {
-			    map.put("views", tables);
-			    page = "landing";
-			    String bankcode =tellerMaster.getBankCode();
-			    Map<String, Integer> downloadHistory = DownloadHistory(bankcode);
-			    downloadHistory.entrySet().stream().forEach(e -> model.addAttribute(e.getKey(),e.getValue()));
-			} else {
-			    model.addAttribute("NO_PRVLG", "Please check privilages..!");
-			    page = "/";
-			}
-		    } catch (Exception e) {
-			e.printStackTrace();
-			model.addAttribute("NO_PRVLG", e.getMessage());
-			page = CebiConstant.LOGIN;
-		    }
-		} else {
-		    model.addAttribute("LOGIN_ERROR", CebiConstant.IP_ADDRESS);
-		    page = CebiConstant.LOGIN;
-		}
+						if (!flag) {
+							model.addAttribute("LOGIN_ERROR", "Bank Region ORACLE Server Issue...!!!");
+							page = CebiConstant.LOGIN;
+						} else {
+							Banks banks = adminReportService.populateBankDbDetail(tellerMaster.getBankCode());
+							tellerMaster.setIp(banks.getDatabaseUrl());
+							session.setAttribute("dburl", banks.getDatabaseUrl());
+							session.setAttribute("bank", banks.getBankCode());
+							session.setAttribute("user", tellerMaster.getTellerid());
+							session.setAttribute(CebiConstant.BANK_CODE, tellerMaster.getBankCode());
+							session.setAttribute("isCCdp", tellerMaster.isCcdp());
+							session.setAttribute("bnkname", tellerMaster.getBankName());
+							session.setAttribute("tellertype", tellerMaster.getTellertype());
+							List<TableMetaData> tables = adminTableMetaDataService
+									.retrieveDbTables(tellerMaster.getBankCode());
+							if (!tables.isEmpty()) {
+								map.put("views", tables);
+								page = "landing";
+								/*String bankcode = tellerMaster.getBankCode();
+								Map<String, Integer> downloadHistory = DownloadHistory(bankcode);
+								downloadHistory.entrySet().stream()
+										.forEach(e -> model.addAttribute(e.getKey(), e.getValue()));*/
+							} else {
+								model.addAttribute("NO_PRVLG", "Please check privilages..!");
+								page = "/";
+							}
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+						model.addAttribute("NO_PRVLG", e.getMessage());
+						page = CebiConstant.LOGIN;
+					}
+				} else {
+					model.addAttribute("LOGIN_ERROR", CebiConstant.IP_ADDRESS);
+					page = CebiConstant.LOGIN;
+				}
 	    }
 	    applicationLabelService.retrieveAllLabels();
 
@@ -224,10 +227,10 @@ public class AdminReportController {
     }
     
     //Download History Code
-      public Map<String,Integer>  DownloadHistory(String bankcode) {
+/*      public Map<String,Integer>  DownloadHistory(String bankcode) {
 	  return adminReportService.getTotalCount(bankcode);
     }
-    
+ */   
     public String decrypt(final String encrypted) throws Exception {
     	 
     	 try {
@@ -318,7 +321,14 @@ public class AdminReportController {
 	QueryData queryData = mapper.readValue(param, QueryData.class);
 	HttpSession session = request.getSession();
 	String bank = (String) session.getAttribute("bank");
-	TellerMaster master =populatemasterData(request);
+	pdfBytes = createExcelService.downloadExcel(queryData, bank);
+	HttpHeaders headers = new HttpHeaders();
+	response.setContentType("application/ms-excel");
+	headers.setContentDispositionFormData(CebiConstant.INLINE, "cebi.xls");
+	pdfResponse = new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
+	return pdfResponse;
+}
+	/*TellerMaster master =populatemasterData(request);
 	try{
 		pdfBytes = adminReportService.downloadPdf(queryData, bank,master);
 		HttpHeaders headers = new HttpHeaders();
@@ -331,7 +341,7 @@ public class AdminReportController {
 		response.sendRedirect(request.getContextPath()+"/rptpage?"+"error=1&errmsg=" + e.getMessage());
 	}
 	return pdfResponse;
-    }
+    }*/
 
     @RequestMapping(value = MappingConstant.DOWNLOAD_EXCEL, method = RequestMethod.POST)
     public ResponseEntity<byte[]> exportDataToExcel(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -342,7 +352,14 @@ public class AdminReportController {
 	QueryData queryData = mapper.readValue(param, QueryData.class);
 	HttpSession session = request.getSession();
 	String bank = (String) session.getAttribute("bank");
-	TellerMaster master =populatemasterData(request);
+	pdfBytes = createExcelService.downloadExcel(queryData, bank);
+	HttpHeaders headers = new HttpHeaders();
+	response.setContentType("application/ms-excel");
+	headers.setContentDispositionFormData(CebiConstant.INLINE, "cebi.xls");
+	pdfResponse = new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
+	return pdfResponse;
+}
+	/*TellerMaster master =populatemasterData(request);
 	try{
 		pdfBytes = adminReportService.downloadExcel(queryData, bank,master);
 		HttpHeaders headers = new HttpHeaders();
@@ -358,7 +375,7 @@ public class AdminReportController {
 	
 	return pdfResponse;
     }
-    
+    */
 
     @RequestMapping(value = MappingConstant.DOWNLOAD_CSV, method = RequestMethod.POST)
     public @ResponseBody ResponseEntity<byte[]> exportDataToCsv(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -370,7 +387,14 @@ public class AdminReportController {
 	HttpSession session = request.getSession();
 	QueryData queryData = mapper.readValue(param, QueryData.class);
 	String bank = (String) session.getAttribute("bank");
-	TellerMaster master =populatemasterData(request);
+	pdfBytes = createCsvService.downloadCsv(queryData, bank);
+	HttpHeaders headers = new HttpHeaders();
+	response.setContentType("text/csv");
+	headers.setContentDispositionFormData(CebiConstant.INLINE, "cebi.csv");
+	pdfResponse = new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
+	return pdfResponse;
+}
+	/*TellerMaster master =populatemasterData(request);
 	try{
 		pdfBytes = adminReportService.csvDownloadQueue(queryData, bank,master);
 		HttpHeaders headers = new HttpHeaders();
@@ -385,7 +409,7 @@ public class AdminReportController {
 	
 	return pdfResponse;
     }
-
+*/
     @RequestMapping(value = MappingConstant.DOWNLOAD_CSV_PIPE, method = RequestMethod.POST)
     public ResponseEntity<byte[]> downloadCsvPipeSeperator(HttpServletRequest request, HttpServletResponse response) throws IOException {
 	byte[] pdfBytes = null;
@@ -395,7 +419,14 @@ public class AdminReportController {
 	QueryData queryData = mapper.readValue(param, QueryData.class);
 	HttpSession session = request.getSession();
 	String bank = (String) session.getAttribute("bank");
-	TellerMaster master =populatemasterData(request);
+	pdfBytes = createCsvService.downloadCsvPipeSeperator(queryData, bank);
+	HttpHeaders headers = new HttpHeaders();
+	response.setContentType("text/csv");
+	headers.setContentDispositionFormData(CebiConstant.INLINE, "cebi.csv");
+	pdfResponse = new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
+	return pdfResponse;
+}
+	/*TellerMaster master =populatemasterData(request);
 	try{
 		pdfBytes =  (byte[]) adminReportService.downloadCsvPipeSeperator(queryData, bank,master);
 		HttpHeaders headers = new HttpHeaders();
@@ -410,7 +441,7 @@ public class AdminReportController {
 	}
 		return pdfResponse;
     }
-    
+    */
     @RequestMapping(value = MappingConstant.DOWNLOAD_QUEUE, method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> createCommonDownloadQueue(@RequestBody QueryData queryData, HttpServletRequest request,HttpServletResponse response) throws IOException {
 		HttpSession session = request.getSession();
@@ -425,7 +456,7 @@ public class AdminReportController {
 			String date = dtf.format(LocalDateTime.now());
 			BigDecimal count = adminReportService.getReportQueueStatusCount(bank, date);
 			if(count.intValue()<4){
-		     downloadQueueResponse = adminReportService.commonDownloadQueue(queryData,bank,master);
+		     /*downloadQueueResponse = adminReportService.commonDownloadQueue(queryData,bank,master);*/
 			}else{
 				downloadQueueResponse = new HashMap<String, Object>();
 				downloadQueueResponse.put("msg", queryData.getReporttype().toUpperCase() + " Another File is INPROCESS....!!!!!!!");
@@ -486,9 +517,9 @@ public class AdminReportController {
     @RequestMapping(value = MappingConstant.LANDING_DEFAULT_PAGE, method = RequestMethod.GET)
     public String landingPage(Model model, HttpServletRequest request) {
     HttpSession session = request.getSession();
-	String bankcode = (String) session.getAttribute(CebiConstant.BANK_CODE);
+	/*String bankcode = (String) session.getAttribute(CebiConstant.BANK_CODE);
 	Map<String, Integer> downloadHistory = DownloadHistory(bankcode);
-	downloadHistory.entrySet().stream().forEach(e -> model.addAttribute(e.getKey(),e.getValue()));
+	downloadHistory.entrySet().stream().forEach(e -> model.addAttribute(e.getKey(),e.getValue()));*/
 	return "landing";
     }
 

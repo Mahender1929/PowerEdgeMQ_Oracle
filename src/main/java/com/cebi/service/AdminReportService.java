@@ -25,11 +25,13 @@ public interface AdminReportService {
 	public  List<ViewInfo> retreiveViewDetails(String type);
 	Object buildSqlQuery(QueryData getTableData, String bank, TellerMaster tellerMaster) throws Exception;
 	public void updatereportStatus(int id, String inProcess);
+	
 	byte[] downloadExcel(QueryData queryData, String bank, TellerMaster master) throws Exception;
 	byte[] downloadCsvPipeSeperator(QueryData queryData, String bank, TellerMaster master) throws Exception;
 	byte[] downloadPdf(QueryData queryData, String bank, TellerMaster master) throws Exception;
-	public byte[] csvDownloadQueue(QueryData queryData, String bank, TellerMaster master) throws Exception;
-	public Map<String,Object> commonDownloadQueue(QueryData queryData, String bank,TellerMaster master) throws Exception;
+	
+	/*public byte[] csvDownloadQueue(QueryData queryData, String bank, TellerMaster master) throws Exception; */
+	/*public Map<String,Object> commonDownloadQueue(QueryData queryData, String bank,TellerMaster master) throws Exception;*/
 	public BigDecimal getReportQueueStatusCount(String bank, String date);
 	public  LinkedHashMap<String, Integer> getTotalCount(String bankCode);
 

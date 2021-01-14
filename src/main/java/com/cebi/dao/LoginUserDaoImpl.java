@@ -76,6 +76,7 @@ public class LoginUserDaoImpl implements LoginDao {
 	public boolean runScript(String bankName) {
 		Banks db = adminReportService.populateBankDbDetail(bankName);
 		Session session = cebiConstant.getCurrentSession(bankName, db);
+		if(session!=null){
 		List<ViewInfo> views = null;
 		views = populateViews(db);
 		Map<String, String> dbmap = adminTableMetaDataDao.retrieveDbTable(bankName);
@@ -96,6 +97,10 @@ public class LoginUserDaoImpl implements LoginDao {
 			}
 		}
 		return true;
+		}
+		else{
+			return false;
+			}
 	}
 
 	@Transactional

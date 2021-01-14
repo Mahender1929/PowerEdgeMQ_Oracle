@@ -1,4 +1,4 @@
-package com.cebi.configuration;
+/*package com.cebi.configuration;
 
 
 import org.springframework.amqp.core.AmqpAdmin;
@@ -50,4 +50,4 @@ import com.cebi.utility.Constants;
 		return factory;
 	}
 
-}
+}*/

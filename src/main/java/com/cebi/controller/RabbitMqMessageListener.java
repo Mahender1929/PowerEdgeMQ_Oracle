@@ -1,4 +1,4 @@
-package com.cebi.controller;
+/*package com.cebi.controller;
 
 import java.util.Map;
 
@@ -43,4 +43,4 @@ public class RabbitMqMessageListener {
 			e.printStackTrace();
 		}
 	}
-}
+}*/

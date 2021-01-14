@@ -41,9 +41,9 @@ public class AdminReportServiceImpl implements AdminReportService {
     @Autowired
     private StaticReportDaoImpl staticReportDaoImpl;
     
-    @Autowired 
+    /*@Autowired 
     private EventPublisherService eventPublisherService;
-   
+   */
     private static final Logger logger = Logger.getLogger(AdminReportController.class);
 
   
@@ -179,19 +179,19 @@ public class AdminReportServiceImpl implements AdminReportService {
 	}
     }
 
-    @Override
+   /* @Override
     public byte[] csvDownloadQueue(QueryData queryData, String bank, TellerMaster master) throws Exception {
 	logger.info("Enter Into csvDownloadQueue Service");
 	queryData.setReporttype(Constants.CSV);
 	return (byte[]) buildSqlQuery(queryData, bank, master);
     }
-
+*/
     @Override
     public void updatereportStatus(int id, String inProcess) {
 	adminReportDao.updatereportStatus(id, inProcess);
     }
     
-	@Override
+	/*@Override
 	public Map<String, Object> commonDownloadQueue(QueryData queryData, String bank, TellerMaster master) throws Exception {
 		Map<String, Object> map = new HashMap<>();
 		ReportQueueData datQueueData = new ReportQueueData();
@@ -222,7 +222,7 @@ public class AdminReportServiceImpl implements AdminReportService {
 		map.put("msg", msg);
 		return map;
 	}
-
+*/
     @Override
     public byte[] downloadExcel(QueryData queryData, String bank,  TellerMaster master) throws Exception {
 	queryData.setReporttype(Constants.EXCEL);

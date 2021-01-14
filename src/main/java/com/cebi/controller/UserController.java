@@ -8,8 +8,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.cebi.rabbitqueue.Events;
-import com.cebi.service.EventPublisherService;
+/*import com.cebi.rabbitqueue.Events;
+import com.cebi.service.EventPublisherService;*/
 
 /*@Controller
 @RequestMapping("/")*/

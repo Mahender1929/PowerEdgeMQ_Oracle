@@ -1,12 +1,14 @@
 package com.cebi.configuration;
 
+
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
 
 import javax.sql.DataSource;
 
-import org.apache.commons.dbcp.BasicDataSource;
+
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -43,7 +45,7 @@ public class DbConfiguration {
 
 	@Autowired
 	private Environment env;
-
+	
 	@Bean
 	public static PropertySourcesPlaceholderConfigurer propertyConfigInDev() {
 		return new PropertySourcesPlaceholderConfigurer();
@@ -53,6 +55,7 @@ public class DbConfiguration {
 
 	 public static HikariDataSource ds;
 	
+	 
 	@Bean(name = "staticReportbasicDataSource")
 	public DataSource mySqlStaticReportDataSource() throws Exception {
 
@@ -93,9 +96,10 @@ public class DbConfiguration {
 	}
 
 
-	/* ---------end of session factory for static report ------------- */
+	/* ---------end of session factory for static report ------------- 
 
-	/* --------- session factory for prod ------------- */
+	 --------- session factory for prod ------------- */
+	
 	@Bean(name = "basicDataSource")
 	public DataSource mySqlDataSource() throws Exception {
 		
@@ -126,6 +130,7 @@ public class DbConfiguration {
 
 	/* ---------end of session factory for prod report ------------- */
 	protected Properties getHibernateProperties() {
+		
 		Properties properties = new Properties();
 		properties.put("hibernate.show_sql", "true");
 		properties.put("hibernate.dialect", env.getProperty("Banc-Edge.dialect"));
@@ -145,35 +150,3 @@ public class DbConfiguration {
 	}
 
 }
-
-/*BasicDataSource dataSource = new BasicDataSource();
-//HikariDataSource HdataSource = new HikariDataSource();
-String appName = env.getProperty("application.static");
-dataSource.setDriverClassName(env.getProperty(appName + ".driverClassName"));
-dataSource.setUrl(env.getProperty(appName + ".databaseurl"));
-dataSource.setUsername(env.getProperty(appName + ".username"));
-dataSource.setPassword(env.getProperty(appName + ".password"));
-//dataSource.setPassword(AES.decrypt(env.getProperty(appName + ".password")));
-
-	
-		BasicDataSource dataSource = new BasicDataSource();
-		//HikariDataSource HdataSource = new HikariDataSource();
-		String appName = env.getProperty("application.name");
-		dataSource.setDriverClassName(env.getProperty(appName + ".driverClassName"));
-		dataSource.setUrl(env.getProperty(appName + ".databaseurl"));
-		dataSource.setUsername(env.getProperty(appName + ".username"));
-		dataSource.setPassword(env.getProperty(appName + ".password"));
-		//dataSource.setPassword(AES.decrypt(env.getProperty(appName + ".password")));
-		return dataSource;
-		
-		 /* properties.put("hibernate.connection.provider_class", "org.hibernate.hikaricp.internal.HikariCPConnectionProvider");
-		properties.put("hibernate.hikari.dataSourceClassName", "com.mysql.cj.jdbc.mysqlDataSource");
-	    properties.put("hibernate.c3p0.min_size", 1);
-		properties.put("hibernate.c3p0.max_size", 300);
-		properties.put("hibernate.c3p0.timeout", 50);
-		properties.put("hibernate.c3p0.max_statements", 5);
-		properties.put("hibernate.c3p0.hibernate.c3p0.idle_test_period", 3000);
-		
-		*
-		*/
-	

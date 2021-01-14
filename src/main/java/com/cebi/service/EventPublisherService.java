@@ -1,4 +1,4 @@
-package com.cebi.service;
+/*package com.cebi.service;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -26,4 +26,4 @@ public class EventPublisherService {
 		template.convertAndSend(Constants.queueName, message);
 	}
 
-}
+}*/
