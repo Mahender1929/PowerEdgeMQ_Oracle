@@ -45,12 +45,6 @@
 			<version>${hibernate.version}</version>
         </dependency>
         
-       <!--	 <dependency>
-      		<groupId>com.zaxxer</groupId>
-      		<artifactId>HikariCP</artifactId>
-      		<version>2.6.1</version>
-    	</dependency> -->
-    	
     	<dependency>
         <groupId>com.zaxxer</groupId>
         <artifactId>HikariCP</artifactId>
@@ -97,30 +91,6 @@
 			<version>2.9.5</version>
 		</dependency>
     	
-    	<!-- mysql-connector-java -->
-    	
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>8.0.14</version>
-		</dependency>
-		
-		<!-- postgresql -->
-		
-		<dependency>
-    		<groupId>postgresql</groupId>
-    		<artifactId>postgresql</artifactId>
-    		<version>9.1-901-1.jdbc4</version>
-		</dependency>
-		
-		<!-- ojdbc8 -->
-	<!-- 	<dependency>
-   			 <groupId>com.oracle.jdbc</groupId>
-  			  <artifactId>ojdbc8</artifactId>
-    			<version>12.2.0.1</version>
-		</dependency>
-		 -->
-	    	
     	<!-- SLF4J -->
     	
     	<dependency>

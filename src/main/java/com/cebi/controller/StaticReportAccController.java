@@ -103,7 +103,7 @@ public class StaticReportAccController {
 			TellerMaster tellerMaster = new TellerMaster();
 			for (Object[] object : master) {
 			    tellerMaster.setTellerid(object[0].toString());
-			    tellerMaster.setBranchid(Integer.parseInt(object[2].toString()));
+			    tellerMaster.setBranchid(Long.parseLong(object[2].toString()));
 			    tellerMaster.setBankCode(object[3].toString());
 			}
 			String bankCode = (String) session
@@ -171,7 +171,7 @@ public class StaticReportAccController {
 		TellerMaster tellerMaster = new TellerMaster();
 		for (Object[] object : master) {
 		    tellerMaster.setTellerid(object[0].toString());
-		    tellerMaster.setBranchid(Integer.parseInt(object[2].toString()));
+		    tellerMaster.setBranchid(Long.parseLong(object[2].toString()));
 		    tellerMaster.setBankCode(object[3].toString());
 		}
 		String bankCode = (String) session.getAttribute(CebiConstant.BANK_CODE);
@@ -420,7 +420,7 @@ public class StaticReportAccController {
 			TellerMaster tellerMaster = new TellerMaster();
 			for (Object[] object : master) {
 			    tellerMaster.setTellerid(object[0].toString());
-			    tellerMaster.setBranchid(Integer.parseInt(object[2].toString()));
+			    tellerMaster.setBranchid(Long.parseLong(object[2].toString()));
 			    tellerMaster.setBankCode(object[3].toString());
 			}
 			String bankCode = (String) session
@@ -471,7 +471,7 @@ public class StaticReportAccController {
 		TellerMaster tellerMaster = new TellerMaster();
 		for (Object[] object : master) {
 		    tellerMaster.setTellerid(object[0].toString());
-		    tellerMaster.setBranchid(Integer.parseInt(object[2].toString()));
+		    tellerMaster.setBranchid(Long.parseLong(object[2].toString()));
 		    tellerMaster.setBankCode(object[3].toString());
 		}
 		String bankCode = (String) session.getAttribute(CebiConstant.BANK_CODE);

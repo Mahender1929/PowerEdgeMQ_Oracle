@@ -526,6 +526,7 @@ function submitCf(e) {
 						closeModal();
 						var err = xhr.responseText;
 						alert("Session Time Out");
+						window.location = "logout.html";
 						if (err.toLowerCase().indexOf("session_timed_out") >= 0) {
 							window.location = "login.html?statusCheck=SessionExpired";
 						}

@@ -93,6 +93,7 @@ public class AdminReportController {
     @GetMapping(value = MappingConstant.DEFAULT_PAGE)
     public ModelAndView loginPage(ModelAndView model, HttpServletRequest request) {
 	HttpSession httpSession = request.getSession();
+	httpSession.setMaxInactiveInterval(10*60); // Session Time to logout 
 	if (httpSession.getAttribute("user") != null) {
 	    httpSession.invalidate();
 	}
@@ -115,8 +116,8 @@ public class AdminReportController {
 	List<Object[]> master = null;
 	HttpSession session = request.getSession();
 	String afterDecrypt = decrypt(tellerMaster.getPwd());
-	 byte[] bytes = Hex.decodeHex(afterDecrypt.toCharArray());
-	 tellerMaster.setPwd(new String(bytes, "UTF-8"));
+	byte[] bytes = Hex.decodeHex(afterDecrypt.toCharArray());
+	tellerMaster.setPwd(new String(bytes, "UTF-8"));
 	Map<String, List<TableMetaData>> map = ApplicationLabelCache.getViewsInstance();
 	if (tellerMaster.getTellerid() != null && tellerMaster.getPwd() != null) {
 	    if (tellerMaster.getBankName().equalsIgnoreCase("Please Select Bank Name")) {
@@ -147,7 +148,7 @@ public class AdminReportController {
 		for (Object[] obj : master) {
 		    String branchIp = (String) obj[1];
 		    String bankCode = (String) obj[3];
-		    boolean ccdp = (Boolean) obj[4];
+		    String ccdp = (String) obj[4];
 		    long tellertype=0;
 		    if((Long) obj[5]==null)
 		    {
@@ -277,7 +278,8 @@ public class AdminReportController {
 		modelAndView.setViewName("report");
 	    }
 	} else {
-	    modelAndView.setViewName(CebiConstant.LOGIN);
+	   // modelAndView.setViewName(CebiConstant.LOGIN);
+	    modelAndView.setViewName("logout");
 	    modelAndView.addObject("loginForm", tellerMaster);
 	    modelAndView.addObject("SESSION_LOGOUT", CebiConstant.SESSION_LOGOUT);
 	}
@@ -304,7 +306,8 @@ public class AdminReportController {
 	TellerMaster tellerMaster = new TellerMaster();
 	for (Object[] object : master) {
 	    tellerMaster.setTellerid(object[0].toString());
-	    tellerMaster.setBranchid(Integer.parseInt(object[2].toString()));
+	    tellerMaster.setBranchid(Long.parseLong(object[2].toString()));
+	    //tellerMaster.setBranchid(Integer.parseInt(object[2].toString()));
 	    tellerMaster.setBankCode(object[3].toString());
 	    break;
 	}
@@ -514,14 +517,19 @@ public class AdminReportController {
 
     }
 
-    @RequestMapping(value = MappingConstant.LANDING_DEFAULT_PAGE, method = RequestMethod.GET)
-    public String landingPage(Model model, HttpServletRequest request) {
-    HttpSession session = request.getSession();
-	/*String bankcode = (String) session.getAttribute(CebiConstant.BANK_CODE);
-	Map<String, Integer> downloadHistory = DownloadHistory(bankcode);
-	downloadHistory.entrySet().stream().forEach(e -> model.addAttribute(e.getKey(),e.getValue()));*/
-	return "landing";
-    }
+	@RequestMapping(value = MappingConstant.LANDING_DEFAULT_PAGE, method = RequestMethod.GET)
+	public String landingPage(Model model, HttpServletRequest request) {
+		HttpSession session = request.getSession();
+		String bankcode = (String) session.getAttribute(CebiConstant.BANK_CODE);
+		if (bankcode != null) {
+			/*Map<String, Integer> downloadHistory = DownloadHistory(bankcode);
+			downloadHistory.entrySet().stream().forEach(e -> model.addAttribute(e.getKey(), e.getValue()));
+			*/return "landing";
+		} else {
+			return "logout";
+		}
+	}
+    
 
     @RequestMapping(value = MappingConstant.HELP, method = RequestMethod.GET)
     public ModelAndView faqQuestions(ModelAndView model) {
@@ -545,7 +553,7 @@ public class AdminReportController {
 	TellerMaster tellerMaster = new TellerMaster();
 	for (Object[] object : master) {
 	    tellerMaster.setTellerid(object[0].toString());
-	    tellerMaster.setBranchid(Integer.parseInt(object[2].toString()));
+	    tellerMaster.setBranchid(Long.parseLong(object[2].toString()));
 	    tellerMaster.setBankCode(object[3].toString());
 	    break;
 	}
@@ -597,6 +605,13 @@ public class AdminReportController {
     }
   
     return "redirect:/showFavouriteList";
+    }
+    
+    @RequestMapping(value = "/logout", method = RequestMethod.GET)
+    public ModelAndView logut(ModelAndView model) {
+	ModelAndView mv = new ModelAndView();
+	mv.setViewName("logout");
+	return mv;
     }
     
 }

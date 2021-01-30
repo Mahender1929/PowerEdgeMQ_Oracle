@@ -72,7 +72,7 @@ display:none;
 					</div>
 				</div>
 				<c:choose>
-					<c:when test="${sessionScope.isCCdp=='true'}">
+					<c:when test="${sessionScope.isCCdp=='Y'}">
 						<div class="col-lg-3 col-md-6 col-sm-6">
 							<div class="card card-stats">
 								<div class="card-header card-header-success card-header-icon">
@@ -95,7 +95,7 @@ display:none;
 					</c:when>
 				</c:choose>
 			<c:choose>
-					<c:when test="${sessionScope.isCCdp=='false'}">
+					<c:when test="${sessionScope.isCCdp=='N'}">
 						<div class="col-lg-3 col-md-6 col-sm-6">
 							<div class="card card-stats">
 								<div class="card-header card-header-success card-header-icon">

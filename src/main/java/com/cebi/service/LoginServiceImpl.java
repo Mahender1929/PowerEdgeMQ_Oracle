@@ -2,16 +2,13 @@ package com.cebi.service;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cebi.dao.LoginDao;
-import com.cebi.entity.Banks;
 import com.cebi.entity.TellerMaster;
+import com.cebi.utility.AES;
 
 @Service
 public class LoginServiceImpl implements LoginService {
@@ -23,7 +20,7 @@ public class LoginServiceImpl implements LoginService {
 	@Override
 	public List<Object[]> validateLoginUser(TellerMaster tellerMaster) {
 		logger.info("Inside validateLoginUser()");
-	//	tellerMaster.setPwd(AES.getMD5EncryptedValue(tellerMaster.getPwd()));
+	    //tellerMaster.setPwd(AES.getMD5EncryptedValue(tellerMaster.getPwd()));
 		return loginDao.validateLoginUser(tellerMaster);
 	}
 

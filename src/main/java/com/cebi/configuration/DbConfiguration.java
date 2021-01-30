@@ -8,7 +8,6 @@ import java.util.Properties;
 
 import javax.sql.DataSource;
 
-
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -35,6 +34,7 @@ import com.cebi.entity.ReportQueueData;
 import com.cebi.entity.RequiredField;
 import com.cebi.entity.TellerMaster;
 import com.cebi.entity.ViewInfo;
+import com.cebi.utility.AES;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
@@ -64,7 +64,8 @@ public class DbConfiguration {
 		        config.setDriverClassName(env.getProperty(appName + ".driverClassName"));
 		        config.setJdbcUrl(env.getProperty(appName + ".databaseurl"));
 		        config.setUsername(env.getProperty(appName + ".username"));
-		        config.setPassword(env.getProperty(appName + ".password"));  
+		        //config.setPassword(env.getProperty(appName + ".password"));  
+		        config.setPassword(AES.decrypt(env.getProperty(appName + ".password")));
 		        config.addDataSourceProperty("cachePrepStmts", true);
 		        config.addDataSourceProperty("prepStmtCacheSize", 250);
 		        config.addDataSourceProperty("prepStmtCacheSqlLimit", 2048);
@@ -108,7 +109,8 @@ public class DbConfiguration {
 	        config.setDriverClassName(env.getProperty(appName + ".driverClassName"));
 	        config.setJdbcUrl(env.getProperty(appName + ".databaseurl"));
 	        config.setUsername(env.getProperty(appName + ".username"));
-	        config.setPassword(env.getProperty(appName + ".password"));  
+	        //config.setPassword(env.getProperty(appName + ".password"));  
+	        config.setPassword(AES.decrypt(env.getProperty(appName + ".password")));
 	        config.addDataSourceProperty("cachePrepStmts", "true");
 	        config.addDataSourceProperty("prepStmtCacheSize", "250");
 	        config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");

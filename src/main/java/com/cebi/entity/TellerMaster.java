@@ -25,21 +25,21 @@ public class TellerMaster implements java.io.Serializable {
 	@Column(name = "CAPABILITY")
 	private Long capability;
 	@Column(name = "ENABLED")
-	private long enabled;
+	private Long enabled;
 	@Column(name = "TELLERTYPE")
 	private Long tellertype;
 	@Column(name = "IP")
 	private String ip;
 	@Column(name = "SIGNONCOUNT")
-	private Short signoncount;
+	private Long signoncount;
 	@Column(name = "TELLER_NM")
 	private String tellerNm;
 	@Column(name = "BRANCHID")
-	private Integer branchid;
+	private Long branchid;
 	@Column(name = "BANK_CODE")
 	private String bankCode;
 	@Column(name = "ccdp",nullable=true)
-	private boolean ccdp;
+	private String ccdp;
 
 	@Transient
 	private String bankName;
@@ -52,80 +52,72 @@ public class TellerMaster implements java.io.Serializable {
 		return tellerid;
 	}
 
-	public String getPwd() {
-		return pwd;
-	}
-
-	public Long getCapability() {
-		return capability;
-	}
-
-	public long getEnabled() {
-		return enabled;
-	}
-
-	public Long getTellertype() {
-		return tellertype;
-	}
-
-	public String getIp() {
-		return ip;
-	}
-
-	public Short getSignoncount() {
-		return signoncount;
-	}
-
-	public String getTellerNm() {
-		return tellerNm;
-	}
-
-	public Integer getBranchid() {
-		return branchid;
-	}
-
-	public String getBankName() {
-		return bankName;
-	}
-
 	public void setTellerid(String tellerid) {
 		this.tellerid = tellerid;
+	}
+
+	public String getPwd() {
+		return pwd;
 	}
 
 	public void setPwd(String pwd) {
 		this.pwd = pwd;
 	}
 
+	public Long getCapability() {
+		return capability;
+	}
+
 	public void setCapability(Long capability) {
 		this.capability = capability;
 	}
 
-	public void setEnabled(long enabled) {
+	public Long getEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(Long enabled) {
 		this.enabled = enabled;
+	}
+
+	public Long getTellertype() {
+		return tellertype;
 	}
 
 	public void setTellertype(Long tellertype) {
 		this.tellertype = tellertype;
 	}
 
+	public String getIp() {
+		return ip;
+	}
+
 	public void setIp(String ip) {
 		this.ip = ip;
 	}
 
-	public void setSignoncount(Short signoncount) {
+	public Long getSignoncount() {
+		return signoncount;
+	}
+
+	public void setSignoncount(Long signoncount) {
 		this.signoncount = signoncount;
+	}
+
+	public String getTellerNm() {
+		return tellerNm;
 	}
 
 	public void setTellerNm(String tellerNm) {
 		this.tellerNm = tellerNm;
 	}
 
-	public void setBranchid(Integer branchid) {
-		this.branchid = branchid;
+	public Long getBranchid() {
+		return branchid;
 	}
 
-	public void setBankName(String bankName) {
-		this.bankName = bankName;
+	public void setBranchid(Long branchid) {
+		this.branchid = branchid;
 	}
 
 	public String getBankCode() {
@@ -136,13 +128,23 @@ public class TellerMaster implements java.io.Serializable {
 		this.bankCode = bankCode;
 	}
 
-	public boolean isCcdp() {
+	public String isCcdp() {
 		return ccdp;
 	}
 
-	public void setCcdp(boolean ccdp) {
+	public void setCcdp(String ccdp) {
 		this.ccdp = ccdp;
 	}
+
+	public String getBankName() {
+		return bankName;
+	}
+
+	public void setBankName(String bankName) {
+		this.bankName = bankName;
+	}
+
+
 
 
 }

@@ -7,7 +7,16 @@ public class EncryptDecryptPass {
 	public static void main(String[] args) {
 		try {
 
-			logger.info("decrypted pass1=" + AES.encrypt("Admin@123"));
+			logger.info("decrypted pass1=" + AES.encrypt("PAYAGGADMINNEW"));
+			System.out.println("*****************************");
+			System.out.println(AES.encrypt("admin"));
+			System.out.println("*****************************");
+			System.out.println("*****************************");
+			System.out.println(AES.encrypt("root"));
+			System.out.println("*****************************");
+			System.out.println("*****************************");
+			System.out.println(AES.encrypt("101"));
+			System.out.println("*****************************");
 			logger.info("decrypted pass1=" + AES.decrypt("J/2UNSCd/krNc9qnuLdKjw=="));
 
 			logger.info("getMD5EncryptedValue pass2=" + AES.getMD5EncryptedValue("winquery"));

@@ -14,7 +14,7 @@ public class AuditHistory implements java.io.Serializable {
 	private static final long serialVersionUID = -6540785696744783149L;
 	private Integer id;
 	private Integer tellerId;
-	private Integer branchId;
+	private Long branchId;
 	private String bankCode;
 	private String query;
 	private String audDate;
@@ -51,11 +51,11 @@ public class AuditHistory implements java.io.Serializable {
 	}
 
 	@Column(name = "branch_id")
-	public Integer getBranchId() {
+	public Long getBranchId() {
 		return this.branchId;
 	}
 
-	public void setBranchId(Integer branchId) {
+	public void setBranchId(Long branchId) {
 		this.branchId = branchId;
 	}
 
