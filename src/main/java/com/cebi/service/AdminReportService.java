@@ -18,7 +18,7 @@ import com.cebi.entity.ViewInfo;
 public interface AdminReportService {
 
 	public List<TableMetaData> getTableData(QueryData getTableData,String bank,TellerMaster tellerMaster) throws Exception;
-	public List<TableMetaData> populateDbTables(String bank);
+	public List<TableMetaData> populateDbTables(String bank,String merchantId);
 	public List<Banks> retreiveBankNames();
 	public Map<String,List<String>> populateBankDbDetails(List<Banks> banks);
 	public Banks populateBankDbDetail(String bank);

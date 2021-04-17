@@ -22,3 +22,6 @@
 2021-01-28 16:49:54 INFO  EncryptDecryptPass:10 - decrypted pass1=h3F1bIbmqgvNM4hCE8ckKQ==
 2021-01-28 16:49:54 INFO  EncryptDecryptPass:20 - decrypted pass1=winquery
 2021-01-28 16:49:54 INFO  EncryptDecryptPass:22 - getMD5EncryptedValue pass2=1d6d0a7ffb6bfae967b59f53a5839deb
+2021-04-17 17:59:55 INFO  EncryptDecryptPass:10 - decrypted pass1=h3F1bIbmqgvNM4hCE8ckKQ==
+2021-04-17 17:59:55 INFO  EncryptDecryptPass:25 - decrypted pass1=winquery
+2021-04-17 17:59:55 INFO  EncryptDecryptPass:27 - getMD5EncryptedValue pass2=1d6d0a7ffb6bfae967b59f53a5839deb

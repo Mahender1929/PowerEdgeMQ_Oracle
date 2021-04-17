@@ -26,8 +26,8 @@ public class AdminTableMetaDataServiceImpl implements AdminTableMetaDataService 
 	StaticReportDaoImpl staticReportDaoImpl;
 
 	@Override
-	public List<TableMetaData> retrieveDbTables(String bank) {
-		return adminTableMetaDataDao.retrieveDbTables(bank);
+	public List<TableMetaData> retrieveDbTables(String bank,String merchantId) {
+		return adminTableMetaDataDao.retrieveDbTables(bank,merchantId);
 	}
 
 	@Override

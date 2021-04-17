@@ -51,11 +51,11 @@ public class AdminReportServiceImpl implements AdminReportService {
 	 return (List<TableMetaData>)buildSqlQuery(getTableData, bank, master);
     }
 
-    public List<TableMetaData> populateDbTables(String bank) {
+    public List<TableMetaData> populateDbTables(String bank, String merchantId) {
 	List<TableMetaData> tables = null;
 	Map<String, List<TableMetaData>> cache = ApplicationLabelCache.getViewsInstance();
 	if (cache.get("views") == null) {
-	    tables = adminTableMetaDataService.retrieveDbTables(bank);
+	    tables = adminTableMetaDataService.retrieveDbTables(bank,merchantId);
 	    cache.put("views", tables);
 	} else {
 	    for (Map.Entry<String, List<TableMetaData>> entry : cache.entrySet()) {

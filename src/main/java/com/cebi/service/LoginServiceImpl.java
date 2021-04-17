@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import com.cebi.dao.LoginDao;
 import com.cebi.entity.TellerMaster;
-import com.cebi.utility.AES;
 
 @Service
 public class LoginServiceImpl implements LoginService {
@@ -23,19 +22,22 @@ public class LoginServiceImpl implements LoginService {
 	    //tellerMaster.setPwd(AES.getMD5EncryptedValue(tellerMaster.getPwd()));
 		return loginDao.validateLoginUser(tellerMaster);
 	}
-
-	@Override
-	public boolean runScript(String bankName) {
-		logger.info("Inside validateLoginUser()");
-		return loginDao.runScript(bankName);
-	}
 	
 	@Override
 	public List<Object[]> validateSuperLoginUser(TellerMaster tellerMaster) {
+		logger.info("Inside validateSuperLoginUser()");
 		//tellerMaster.setPwd(AES.getMD5EncryptedValue(tellerMaster.getPwd()));
 		return loginDao.validateSuperLoginUser(tellerMaster);
 	}
 
+
+	@Override
+	public boolean runScript(String bankName) {
+		logger.info("Inside runScript()");
+		return loginDao.runScript(bankName);
+	}
+	
+	
 	@Override
 	public List<String> checkbankcode(String database_url,TellerMaster master) {
 		return loginDao.checkbankcode(database_url,master);

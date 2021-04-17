@@ -15,7 +15,7 @@ public class TellerMaster implements java.io.Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7576808287358423189L;
+	private static long serialVersionUID = -7576808287358423189L;
 
 	@Id
 	@Column(name = "TELLERID")
@@ -40,6 +40,37 @@ public class TellerMaster implements java.io.Serializable {
 	private String bankCode;
 	@Column(name = "ccdp",nullable=true)
 	private String ccdp;
+	
+	
+
+	public String getCcdp() {
+		return ccdp;
+	}
+
+	public static void setSerialversionuid(long serialversionuid) {
+		serialVersionUID = serialversionuid;
+	}
+
+	@Column(name = "MERCHANT_ID")
+	private String merchantId;
+	public String getMerchantId() {
+		return merchantId;
+	}
+
+	public void setMerchantId(String merchantId) {
+		this.merchantId = merchantId;
+	}
+
+	public String getMerchantLogin() {
+		return merchantLogin;
+	}
+
+	public void setMerchantLogin(String merchantLogin) {
+		this.merchantLogin = merchantLogin;
+	}
+
+	@Column(name = "MERCHANT_LOGIN")
+	private String merchantLogin;
 
 	@Transient
 	private String bankName;

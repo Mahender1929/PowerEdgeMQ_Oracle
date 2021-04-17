@@ -2,13 +2,14 @@ package com.cebi.controller;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.security.spec.AlgorithmParameterSpec;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -94,6 +95,7 @@ public class AdminReportController {
     public ModelAndView loginPage(ModelAndView model, HttpServletRequest request) {
 	HttpSession httpSession = request.getSession();
 	httpSession.setMaxInactiveInterval(10*60); // Session Time to logout 
+	//if (httpSession.getAttribute("merchant_login") != null) {
 	if (httpSession.getAttribute("user") != null) {
 	    httpSession.invalidate();
 	}
@@ -119,6 +121,7 @@ public class AdminReportController {
 	byte[] bytes = Hex.decodeHex(afterDecrypt.toCharArray());
 	tellerMaster.setPwd(new String(bytes, "UTF-8"));
 	Map<String, List<TableMetaData>> map = ApplicationLabelCache.getViewsInstance();
+	//if (tellerMaster.getMerchant_login() != null && tellerMaster.getPwd() != null) {
 	if (tellerMaster.getTellerid() != null && tellerMaster.getPwd() != null) {
 	    if (tellerMaster.getBankName().equalsIgnoreCase("Please Select Bank Name")) {
 		master = loginService.validateLoginUser(tellerMaster);
@@ -127,6 +130,7 @@ public class AdminReportController {
 		CebiConstant.BANKNAME = tellerMaster.getBankName();
 		master = loginService.validateSuperLoginUser(tellerMaster);
 	    }
+	    //session.setAttribute("merchant_login", tellerMaster.getMerchant_login());
 	    session.setAttribute("auditHistory", master);
 	    if (master.isEmpty()) {
 		model.addAttribute("INVALID_USER", CebiConstant.INVALID_USER);
@@ -143,12 +147,14 @@ public class AdminReportController {
 			logger.info(e.getMessage());
 		    }
 		}
-
 		remoteAddr = remoteAddr.substring(0, remoteAddr.lastIndexOf('.'));
-		for (Object[] obj : master) {
-		    String branchIp = (String) obj[1];
-		    String bankCode = (String) obj[3];
-		    String ccdp = (String) obj[4];
+		for (Object[] obj : master) { // master object iteration
+		    String branchIp        = (String) obj[1];
+		    String bankCode        = (String) obj[3];
+		    String ccdp            = (String) obj[4];
+		    String merchant_login  = (String) obj[6];
+		    String merchant_id     = (String) obj[7];
+
 		    long tellertype=0;
 		    if((Long) obj[5]==null)
 		    {
@@ -161,6 +167,8 @@ public class AdminReportController {
 		    tellerMaster.setBankCode(bankCode);
 		    tellerMaster.setCcdp(ccdp);
 		    tellerMaster.setTellertype(tellertype);
+		    tellerMaster.setMerchantId(merchant_id);
+		    tellerMaster.setMerchantLogin(merchant_login);
 		    if (branchIp.contains(".")) {
 				branchIp = branchIp.substring(0, branchIp.lastIndexOf('.'));
 				if (branchIp.equalsIgnoreCase(remoteAddr)) {
@@ -174,9 +182,11 @@ public class AdminReportController {
 			session.setAttribute(CebiConstant.BANK_CODE, tellerMaster.getBankCode());
 			session.setAttribute("isCCdp", tellerMaster.isCcdp());
 			session.setAttribute("tellertype", tellerMaster.getTellertype());
+			session.setAttribute("merchant_id", tellerMaster.getMerchantId());
+			session.setAttribute("merchant_login", tellerMaster.getMerchantLogin());
 			page = "landing";
 		    }
-		}
+		}  // for loop ended
 				if (ipAddress) {
 					boolean flag;
 					try {
@@ -195,8 +205,9 @@ public class AdminReportController {
 							session.setAttribute("isCCdp", tellerMaster.isCcdp());
 							session.setAttribute("bnkname", tellerMaster.getBankName());
 							session.setAttribute("tellertype", tellerMaster.getTellertype());
-							List<TableMetaData> tables = adminTableMetaDataService
-									.retrieveDbTables(tellerMaster.getBankCode());
+							session.setAttribute("merchant_id", tellerMaster.getMerchantId());
+							session.setAttribute("merchant_login", tellerMaster.getMerchantLogin());
+							List<TableMetaData> tables = adminTableMetaDataService.retrieveDbTables(tellerMaster.getBankCode(),tellerMaster.getMerchantId());
 							if (!tables.isEmpty()) {
 								map.put("views", tables);
 								page = "landing";
@@ -260,7 +271,9 @@ public class AdminReportController {
 	HttpSession session = request.getSession();
 	List<TableMetaData> tables = null;
 	String bank = (String) session.getAttribute("bank");
-		tables = adminReportService.populateDbTables(bank);
+	String merchantId = (String) session.getAttribute("merchant_id");
+	
+		tables = adminReportService.populateDbTables(bank,merchantId);
 	return tables;
     }
 
@@ -270,9 +283,11 @@ public class AdminReportController {
 	ModelAndView modelAndView = new ModelAndView();
 	HttpSession session = request.getSession();
 	TellerMaster tellerMaster = new TellerMaster();
-	if (session.getAttribute("user") != null) {
+	if (session.getAttribute("merchant_login") != null) {
+	//if (session.getAttribute("user") != null) {
 	    String bank = (String) session.getAttribute("bank");
-	    tables = adminReportService.populateDbTables(bank);
+	    String merchantId = (String) session.getAttribute("merchant_id");
+	    tables = adminReportService.populateDbTables(bank,merchantId);
 	    if (!tables.isEmpty()) {
 		modelAndView.addObject("tables", tables);
 		modelAndView.setViewName("report");
@@ -355,10 +370,18 @@ public class AdminReportController {
 	QueryData queryData = mapper.readValue(param, QueryData.class);
 	HttpSession session = request.getSession();
 	String bank = (String) session.getAttribute("bank");
+	String merchantId = (String) session.getAttribute("merchant_id");
+	//File name change
+	//String tellerid = (String) session.getAttribute("user");
+	SimpleDateFormat forma=new SimpleDateFormat("dd-MM-yyyy_hh-mm-ss");
+	Date date=new Date(System.currentTimeMillis());
+	String curr_date=forma.format(date);
 	pdfBytes = createExcelService.downloadExcel(queryData, bank);
 	HttpHeaders headers = new HttpHeaders();
 	response.setContentType("application/ms-excel");
-	headers.setContentDispositionFormData(CebiConstant.INLINE, "cebi.xls");
+	headers.setContentDispositionFormData(CebiConstant.INLINE, merchantId +"_"+curr_date+".xls");
+	//headers.setContentDispositionFormData(CebiConstant.INLINE, "cebi.xls");
+	//headers.setContentDispositionFormData(CebiConstant.INLINE, tellerid+"_"+curr_date+".xls");
 	pdfResponse = new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
 	return pdfResponse;
 }
@@ -390,10 +413,15 @@ public class AdminReportController {
 	HttpSession session = request.getSession();
 	QueryData queryData = mapper.readValue(param, QueryData.class);
 	String bank = (String) session.getAttribute("bank");
+	String merchantId = (String) session.getAttribute("merchant_id");
+	SimpleDateFormat forma=new SimpleDateFormat("dd-MM-yyyy_hh-mm-ss");
+	Date date=new Date(System.currentTimeMillis());
+	String curr_date=forma.format(date);
 	pdfBytes = createCsvService.downloadCsv(queryData, bank);
 	HttpHeaders headers = new HttpHeaders();
 	response.setContentType("text/csv");
-	headers.setContentDispositionFormData(CebiConstant.INLINE, "cebi.csv");
+	headers.setContentDispositionFormData(CebiConstant.INLINE, merchantId +"_"+curr_date+".csv");
+	//headers.setContentDispositionFormData(CebiConstant.INLINE, "cebi.csv");
 	pdfResponse = new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
 	return pdfResponse;
 }
@@ -422,10 +450,15 @@ public class AdminReportController {
 	QueryData queryData = mapper.readValue(param, QueryData.class);
 	HttpSession session = request.getSession();
 	String bank = (String) session.getAttribute("bank");
+	String merchantId = (String) session.getAttribute("merchant_id");
+	SimpleDateFormat forma=new SimpleDateFormat("dd-MM-yyyy_hh-mm-ss");
+	Date date=new Date(System.currentTimeMillis());
+	String curr_date=forma.format(date);
 	pdfBytes = createCsvService.downloadCsvPipeSeperator(queryData, bank);
 	HttpHeaders headers = new HttpHeaders();
 	response.setContentType("text/csv");
-	headers.setContentDispositionFormData(CebiConstant.INLINE, "cebi.csv");
+	headers.setContentDispositionFormData(CebiConstant.INLINE, merchantId +"_"+curr_date+".csv");
+	//headers.setContentDispositionFormData(CebiConstant.INLINE, "cebi.csv");
 	pdfResponse = new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
 	return pdfResponse;
 }
