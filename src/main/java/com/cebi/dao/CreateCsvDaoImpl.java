@@ -35,8 +35,8 @@ public class CreateCsvDaoImpl extends PdfUtils implements CreateCsvDao {
 	CebiConstant cebiConstant;
 
 	@Override
-	public byte[] downloadCsv(QueryData queryData, String bank) {
-		byte[] outArray = null;
+	public byte[] downloadCsv(QueryData queryData, String bank, String merchantId) {
+		 byte[] outArray = null;
 		 byte[] bytesArray = null;
 		Session session = cebiConstant.getCurrentSession(bank);
 		ResultSet resultSet = null;
@@ -49,7 +49,7 @@ public class CreateCsvDaoImpl extends PdfUtils implements CreateCsvDao {
 		parameter = queryData.getParameter().trim().length() > 0 ? queryData.getParameter() : "";
 		criteria = queryData.getQuery().trim().length() > 0 ? queryData.getQuery() : "";
 		columns = queryData.getColumnNames().trim().length() > 0 ? queryData.getColumnNames() : "";
-		String query = populateQuery(queryData, parameter, criteria);
+		String query = populateQuery(queryData, parameter, criteria,merchantId);
 		StringBuilder buffer = new StringBuilder();
 		try {
 
@@ -74,7 +74,6 @@ public class CreateCsvDaoImpl extends PdfUtils implements CreateCsvDao {
 			fis.read(bytesArray); // read file into bytes[]
 			fis.close();
 			/*BufferedReader bufferedReader =new BufferedReader(reader);
-			
 			byte[] bs =bufferedReader.*/
 			/*while (resultSet.next()) {
 				buffer.append(CebiConstant.NEW_LINE);
@@ -97,12 +96,11 @@ public class CreateCsvDaoImpl extends PdfUtils implements CreateCsvDao {
 			closeConnection(resultSet,connection,prepareStatement);
 		}
 		outArray = buffer.toString().getBytes();
-
 		return bytesArray;
 	}
 
 	@Override
-	public byte[] downloadCsvPipeSeperator(QueryData queryData, String bank) {
+	public byte[] downloadCsvPipeSeperator(QueryData queryData, String bank,String merchantId) {
 		byte[] outArray = null;
 		Session session = cebiConstant.getCurrentSession(bank);
 		ResultSet resultSet = null;
@@ -115,7 +113,7 @@ public class CreateCsvDaoImpl extends PdfUtils implements CreateCsvDao {
 		parameter = queryData.getParameter().trim().length() > 0 ? queryData.getParameter() : "";
 		criteria = queryData.getQuery().trim().length() > 0 ? queryData.getQuery() : "";
 		columns = queryData.getColumnNames().trim().length() > 0 ? queryData.getColumnNames() : "";
-		String query = populateQuery(queryData, parameter, criteria);
+		String query = populateQuery(queryData, parameter, criteria,merchantId);
 		StringBuilder buffer = new StringBuilder();
 		try {
 
@@ -172,4 +170,5 @@ public class CreateCsvDaoImpl extends PdfUtils implements CreateCsvDao {
 			}
 		}
 	}
+
 }

@@ -12,9 +12,9 @@ public class CreatePdfServiceImpl implements CreatePdfService {
 	@Autowired
 	CreatePdfDao createPdfDao;;
 
-	public byte[] downloadPdf(QueryData queryData, String bank) {
+	public byte[] downloadPdf(QueryData queryData, String bank, String merchantId) {
 		byte[] bytes = null;
-		bytes = createPdfDao.downloadPdf(queryData,bank);
+		bytes = createPdfDao.downloadPdf(queryData,bank,merchantId);
 		return bytes;
 	}
 }

@@ -9,6 +9,7 @@ public class MappingConstant {
 	public static final String RETRIVE_COLUMNS = "/retriveColumns";
 	public static final String GET_TABLEDATA = "/getTableData";
 	public static final String GET_TABLEDATAINCT = "/getTableDatainct";
+	public static final String DOWNLOAD_TEXT = "/createText";
 	public static final String DOWNLOAD_PDF = "/createPdf";
 	public static final String DOWNLOAD_EXCEL = "/createExcel";
 	public static final String DOWNLOAD_CSV = "/createCsv";

@@ -1,6 +1,11 @@
 package com.cebi.dao;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.security.GeneralSecurityException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,8 +23,12 @@ import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.apache.poi.openxml4j.opc.OPCPackage;
+import org.apache.poi.openxml4j.opc.PackageAccess;
+import org.apache.poi.poifs.crypt.EncryptionInfo;
+import org.apache.poi.poifs.crypt.EncryptionMode;
+import org.apache.poi.poifs.crypt.Encryptor;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.hibernate.Session;
 import org.hibernate.internal.SessionImpl;
@@ -30,7 +39,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.cebi.entity.QueryData;
 import com.cebi.utility.CebiConstant;
 import com.cebi.utility.ConnectionException;
+import com.cebi.utility.MappingConstant;
 import com.cebi.utility.PdfUtils;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 
 @Repository
 @Transactional
@@ -44,7 +55,7 @@ public class CreateExcelDaoImpl extends PdfUtils implements CreateExcelDao {
 	StaticReportDaoImpl staticReportDaoImpl;
 
 	@Override
-	public byte[] downloadExcel(QueryData queryData, String bank) {
+	public byte[] downloadExcel(QueryData queryData, String bank, String merchantId) {
 		String parameter = "";
 		String columns = "";
 		String criteria = "";
@@ -68,7 +79,7 @@ public class CreateExcelDaoImpl extends PdfUtils implements CreateExcelDao {
 		HSSFCell cell = row.createCell(0);
 
 		HSSFFont font = wb.createFont();
-		font.setBoldweight(XSSFFont.BOLDWEIGHT_BOLD);
+		font.setBold(true);
 		cellStyle.setFont(font);
 
 		ByteArrayOutputStream outByteStream = new ByteArrayOutputStream();
@@ -102,7 +113,7 @@ public class CreateExcelDaoImpl extends PdfUtils implements CreateExcelDao {
 			criteria = queryData.getQuery().trim().length() > 0 ? queryData.getQuery() : "";
 			columns = queryData.getColumnNames().trim().length() > 0 ? queryData.getColumnNames() : "";
 		}
-		String query = populateQuery(queryData, parameter, criteria);
+		String query = populateQuery(queryData, parameter, criteria, merchantId);
 		try {
 			connection = ((SessionImpl) session).connection();
 			prepareStatement = connection.prepareStatement(query);
@@ -147,6 +158,7 @@ public class CreateExcelDaoImpl extends PdfUtils implements CreateExcelDao {
 				++rowcnt;
 			}
 			wb.write(outByteStream);
+			
 		} catch (Exception e) {
 			logger.info(e.getMessage());
 		} catch (OutOfMemoryError error) {

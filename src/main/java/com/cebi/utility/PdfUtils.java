@@ -44,30 +44,29 @@ public class PdfUtils {
 	@Autowired
 	AdminReportDao adminReportDao;
 
-	public String populateQuery(QueryData table, String parameter, String criteria) {
+	public String populateQuery(QueryData table, String parameter, String criteria, String merchantId) {
 		String sql = "Select ";
 		String parameterS = "  ";
-
 		if (parameter.trim().length() > 0) {
-			
 			 parameter = parameter.trim();
 			    if (parameter.endsWith(","))
 				parameterS += parameter.substring(0, (parameter.length() - 1)) + " ";
 			    else
 				parameterS += parameter.substring(0, (parameter.length())) + " ";
+		}else {
+		    parameterS += "  * ";
 		}
-
 		if (criteria.trim().length() > 0) {
 			sql = sql + parameterS + CebiConstant.QRY_FROM + table.getTable() + CebiConstant.QRY_WHERE;
-			sql += criteria;
+			sql +=  criteria  +  " AND MERCHANTID ="+ merchantId;
 			//sql += CebiConstant.QRY_ROWNUM;
 		} else {
-			sql = sql + parameterS + " from " + table.getTable() + CebiConstant.WHERE_ROWNUM;
+			//sql = sql + parameterS + " from " + table.getTable() + CebiConstant.WHERE_ROWNUM;
+		    sql = sql + parameterS + CebiConstant.QRY_FROM + table.getTable() + CebiConstant.QRY_WHERE +  "MERCHANTID = "+ merchantId;
 		}
 		if (table.getGroupby() != null && table.getGroupby().trim().length() > 0) {
 			String groups = table.getGroupby().substring(0, (table.getGroupby().length() - 1));
 			sql = sql + "GROUP BY " + groups;
-
 		}
 		return sql;
 	}

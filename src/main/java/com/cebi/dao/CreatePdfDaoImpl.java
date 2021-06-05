@@ -43,7 +43,7 @@ public class CreatePdfDaoImpl extends PdfUtils implements CreatePdfDao {
 	@Autowired
 	StaticReportDaoImpl staticReportDaoImpl;
 
-	public byte[] downloadPdf(QueryData queryData, String bank) {
+	public byte[] downloadPdf(QueryData queryData, String bank, String merchantId) {
 
 		byte[] bytes = null;
 		PdfWriter pdfWriter = null;
@@ -87,7 +87,7 @@ public class CreatePdfDaoImpl extends PdfUtils implements CreatePdfDao {
 			criteria = queryData.getQuery().trim().length() > 0 ? queryData.getQuery() : "";
 			columns = queryData.getColumnNames().trim().length() > 0 ? queryData.getColumnNames() : "";
 		}
-		String query = populateQuery(queryData, parameter, criteria);
+		String query = populateQuery(queryData, parameter, criteria, merchantId);
 		logger.info("Inside createJasperReport()::Query :: " + query);
 		try {
 			connection = ((SessionImpl) session).connection();

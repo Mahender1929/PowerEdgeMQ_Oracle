@@ -110,7 +110,8 @@ public class BranchInformationController {
 		ModelAndView model = new ModelAndView();
 		HttpSession session = request.getSession();
 		String bank = (String) session.getAttribute("bank");
-		List<Chart> list = branchInformationService.showchartPage(bank);
+		List<Chart> list = null;
+		//List<Chart> list = branchInformationService.showchartPage(bank);
 		model.addObject("chatData", list);
 		return list;
 
@@ -120,7 +121,8 @@ public class BranchInformationController {
 		ModelAndView model = new ModelAndView();
 		HttpSession session = request.getSession();
 		String bank = (String) session.getAttribute("bank");
-		List<Chart> list = branchInformationService.retrivechartLoanChartDetails(bank);
+		List<Chart> list = null;
+		//List<Chart> list = branchInformationService.retrivechartLoanChartDetails(bank);
 		model.addObject("chatData", list);
 		return list;
 

@@ -599,7 +599,7 @@ function submitCf(e) {
 																e.preventDefault();
 																//value="text";
 																//click :createQueue(value);
-																$("#pdfForm").submit();
+																$("#textForm").submit();
 															}
 														},
 														{
@@ -671,6 +671,7 @@ function formatData() {
 	var json = JSON.stringify(jsonObject);
 	$('#column').val(columnNames);
 	$("#pdf").val(json);
+	$("#text").val(json);
 	$("#excel").val(json);
 	$(".csv").val(json);
 	return json;

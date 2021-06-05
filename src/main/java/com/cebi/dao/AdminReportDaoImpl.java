@@ -107,6 +107,7 @@ public class AdminReportDaoImpl extends PdfUtils implements AdminReportDao {
 	TableMetaData tableMetaData = new TableMetaData();
 	List<ApplicationLabel> labels = null;
 	String filename = null;
+	String merchantid = master1.getMerchantId();
 
 	try {
 	    session = cebiConstant.getCurrentSession(bank);
@@ -121,7 +122,7 @@ public class AdminReportDaoImpl extends PdfUtils implements AdminReportDao {
 	    if (tableMetaData.getAppMessage() == null || tableMetaData.getAppMessage().size() == 0) {
 
 		if ("Simple".equalsIgnoreCase(getTableData.getReporttype())) {
-		    query = populateQuery(getTableData, parameter, criteria);
+		    query = populateQuery(getTableData, parameter, criteria,merchantid);
 		    System.out.println(query);
 		    logger.info("query  --- >  " + query);
 		    if (criteria != null && !criteria.isEmpty()) {
@@ -150,7 +151,7 @@ public class AdminReportDaoImpl extends PdfUtils implements AdminReportDao {
 			}
 		    }
 		} else if (Constants.CSV.equalsIgnoreCase(getTableData.getReporttype())) {
-		    query = super.populateQuery(getTableData, parameter, criteria);
+		    query = super.populateQuery(getTableData, parameter, criteria,merchantid);
 		    logger.info("query  --- >  " + query);
 		    if (criteria != null && !criteria.isEmpty()) {
 			validateTableCriteria(criteria, getTableData, tableMetaData, appMessages);
@@ -218,7 +219,7 @@ public class AdminReportDaoImpl extends PdfUtils implements AdminReportDao {
 
 		    int lgth = 0;
 		    List<String> stringList = new ArrayList<>();
-		    query = super.populateQuery(getTableData, parameter, criteria);
+		    query = super.populateQuery(getTableData, parameter, criteria,merchantid);
 		    logger.info("query  --- >  " + query);
 		    if (criteria != null && !criteria.isEmpty()) {
 			validateTableCriteria(criteria, getTableData, tableMetaData, appMessages);
@@ -336,7 +337,7 @@ public class AdminReportDaoImpl extends PdfUtils implements AdminReportDao {
 		    //return output;
 		} else if (Constants.CSVPIPE.equalsIgnoreCase(getTableData.getReporttype())) {
 			
-		    query = super.populateQuery(getTableData, parameter, criteria);
+		    query = super.populateQuery(getTableData, parameter, criteria, merchantid);
 		    logger.info("query  --- >  " + query);
 		    if (criteria != null && !criteria.isEmpty()) {
 			validateTableCriteria(criteria, getTableData, tableMetaData, appMessages);
@@ -402,7 +403,7 @@ public class AdminReportDaoImpl extends PdfUtils implements AdminReportDao {
 
 		} else {
 
-		    query = super.populateQuery(getTableData, parameter, criteria);
+		    query = super.populateQuery(getTableData, parameter, criteria, merchantid);
 		    //System.out.println(getTableData.getTable());
 		    logger.info("query  --- >  " + query);
 		    if (criteria != null && !criteria.isEmpty()) {
@@ -430,12 +431,12 @@ public class AdminReportDaoImpl extends PdfUtils implements AdminReportDao {
 		    //sheet.addMergedRegion(new CellRangeAddress(firstRow, lastRow, firstCol, lastCol)  
 		    sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 10));
 		    Font font = wb.createFont();
-		    font.setBoldweight(XSSFFont.BOLDWEIGHT_BOLD);
+		    //font.setBoldweight(XSSFFont.BOLDWEIGHT_BOLD);
 		    cellStyle.setFont(font);
 		    
 		    //Set bankName
 		    cell.setCellStyle(cellStyle);
-		    cellStyle.setAlignment(CellStyle.ALIGN_CENTER);
+		   // cellStyle.setAlignment(CellStyle.ALIGN_CENTER);
 		    cell.setCellValue(getBankName(bank));
 		    
 		    //Set tableName
@@ -444,7 +445,7 @@ public class AdminReportDaoImpl extends PdfUtils implements AdminReportDao {
 		    //sheet.addMergedRegion(new CellRangeAddress(firstRow, lastRow, firstCol, lastCol)  
 		    sheet.addMergedRegion(new CellRangeAddress(1,1,0,10));
 		    cell.setCellStyle(cellStyle);
-		    cellStyle.setAlignment(CellStyle.ALIGN_CENTER);
+		   // cellStyle.setAlignment(CellStyle.ALIGN_CENTER);
 		    cell.setCellValue(getTableNames(getTableData.getTable()));
 		    
 		    //ReportId,ReportDate,Time
@@ -452,7 +453,7 @@ public class AdminReportDaoImpl extends PdfUtils implements AdminReportDao {
 		    cell = row.createCell(0);
 		    sheet.addMergedRegion(new CellRangeAddress(2,2,0,10));
 		    cell.setCellStyle(cellStyle);
-		    cellStyle.setAlignment(CellStyle.ALIGN_CENTER);
+		    //cellStyle.setAlignment(CellStyle.ALIGN_CENTER);
 		    SimpleDateFormat sdf =  new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");  
 		    String format = sdf.format(new Date());
 		    String datee = format.substring(0, 10);
@@ -567,7 +568,7 @@ public class AdminReportDaoImpl extends PdfUtils implements AdminReportDao {
 		zippedOut.finish();
 	}
 
-    public String populateQuery(QueryData table, String parameter, String criteria) {
+    public String populateQuery(QueryData table, String parameter, String criteria, String merchantid) {
 	String sql = "SELECT";
 	String parameterS = "  ";
 	if (parameter.trim().length() > 0) {
@@ -579,13 +580,13 @@ public class AdminReportDaoImpl extends PdfUtils implements AdminReportDao {
 	} else {
 	    parameterS += "  * ";
 	}
-
 	if (criteria.trim().length() > 0) {
 	    sql = sql + parameterS + CebiConstant.QRY_FROM + table.getTable() + CebiConstant.QRY_WHERE;
 	    sql += criteria;
-	    sql += CebiConstant.QRY_ROWNUM;
+	    sql += " AND MERCHANTID ="+ merchantid + CebiConstant.QRY_ROWNUM;
 	} else {
-	    sql = sql + parameterS + " from " + table.getTable() + CebiConstant.WHERE_ROWNUM;
+		 //sql = sql + parameterS + " from " + table.getTable()+CebiConstant.WHERE_ROWNUM;
+	    sql = sql + parameterS + CebiConstant.QRY_FROM + table.getTable() + CebiConstant.QRY_WHERE +  "MERCHANTID = "+ merchantid + CebiConstant.QRY_ROWNUM;
 	}
 	if (table.getGroupby() != null && table.getGroupby().trim().length() > 0) {
 	    String groups = table.getGroupby().substring(0, (table.getGroupby().length() - 1));
@@ -666,7 +667,8 @@ public class AdminReportDaoImpl extends PdfUtils implements AdminReportDao {
 	SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
 	parameter = data.getParameter().trim().length() > 0 ? data.getParameter() : "";
 	criteria = data.getQuery().trim().length() > 0 ? data.getQuery() : "";
-	String query = populateQuery(data, parameter, criteria);
+	String merchantid = null;
+	String query = populateQuery(data, parameter, criteria,merchantid );
 	data.setFinalQry(query);
 	data.setCurrentDate(simpleDateFormat.format(new Date()));
 	sessionFactory.getCurrentSession().save(data);
@@ -812,6 +814,10 @@ public class AdminReportDaoImpl extends PdfUtils implements AdminReportDao {
     	int executeUpdate = query.executeUpdate();
 		return executeUpdate;
 	}
+
+
+	
+
 
 }
 

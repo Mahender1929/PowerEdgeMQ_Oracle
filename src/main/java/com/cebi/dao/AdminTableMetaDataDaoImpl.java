@@ -5,12 +5,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Spliterator;
 import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.internal.SessionImpl;
@@ -56,25 +59,29 @@ public class AdminTableMetaDataDaoImpl implements AdminTableMetaDataDao {
 		Session session = cebiConstant.getCurrentSession(bank);
 		connection = ((SessionImpl) session).connection();
 		List<ApplicationLabel> labels = applicationLabelDao.retrieveAllLabels();
+		List<String> merchantmap = merchantviews(bank, merchantId);
+		logger.info(merchantmap);
 		try {
 			prepareStatement = connection.prepareStatement("select view_name from user_views");
 			resultSet = prepareStatement.executeQuery();
 			tableMetaData = new TableMetaData();
 			while (resultSet.next()) {
 				tableMetaData = new TableMetaData();
-				String viewName = resultSet.getString("view_name");
+				String viewName = resultSet.getString("view_name").trim();
 				if (!viewName.equalsIgnoreCase("NPA_CUSTOMERS")) {
-					if (merchantVadilate(merchantId, viewName, connection)) {
-						tableMetaData.setTableName(viewName.trim());
-						setTableLabel(labels, viewName.trim(), tableMetaData);
-						tableNames.add(tableMetaData);
-						/*
-						 * tableMetaData.setTableName(resultSet.getString(
-						 * "view_name").trim());
-						 * setTableLabel(labels,resultSet.getString("view_name")
-						 * .trim(),tableMetaData);
-						 * tableNames.add(tableMetaData);
-						 */
+					for(String tempList : merchantmap){
+						String[] split = tempList.split(",");
+						for(int i=0; split.length>i; i++)
+						{
+							if(split[i].matches(viewName))
+							{
+								logger.info(viewName);
+								tableMetaData.setTableName(viewName.trim());
+								setTableLabel(labels, viewName.trim(), tableMetaData);
+								tableNames.add(tableMetaData);
+							}
+						}
+					
 					}
 				}
 			}
@@ -107,8 +114,16 @@ public class AdminTableMetaDataDaoImpl implements AdminTableMetaDataDao {
 		return tableNames;
 	}
 
+	private List<String> merchantviews(String bank, String merchantId) {
+		List<String> merchantvw = new ArrayList<>();
+		String sql = "select viewname from cesys006 WHERE merchantid ="+merchantId;
+		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+		merchantvw = query.list();
+		return merchantvw;
+	}
+
 	private boolean merchantVadilate(String merchantId, String viewName, Connection connection) {
-		String sql = "select count(*) as count from " + viewName + " where merchant_id='" + merchantId + "'";
+		String sql = "select count(*) as count from " + viewName + " where merchantid='" + merchantId + "'";
 		PreparedStatement prepareStatement = null;
 		ResultSet rs = null;
 		try {
@@ -139,14 +154,14 @@ public class AdminTableMetaDataDaoImpl implements AdminTableMetaDataDao {
 			while (resultSet.next()) {
 				String viewName = resultSet.getString("view_name");
 				map.put(resultSet.getString("view_name"), resultSet.getString("view_name"));
-				System.out.println("view name==" + resultSet.getString("view_name"));
+				logger.info("view name==" + resultSet.getString("view_name"));
 			}
 			int size = 0;
 			if (resultSet != null) {
 				resultSet.last(); // moves cursor to the last row
 				size = resultSet.getRow(); // get row id
 			}
-			System.out.println("Result Set Size===" + size);
+			logger.info("Result Set Size===" + size);
 		} catch (SQLException e) {
 			logger.info("Exception in retrieveDbTables() Method:: " + e.getMessage());
 		} finally {
@@ -290,3 +305,21 @@ public class AdminTableMetaDataDaoImpl implements AdminTableMetaDataDao {
 		}
 	}
 }
+//Map merchantmp = merchantmap.stream().collect(Collectors.toMap(String::Function.identity(), String::length));
+		//Map merchantmp = merchantmap.stream().collect(Collectors.toMap(Function.identity(), String::length, (e1, e2) -> e1));
+		//Map<String, Integer> merchantmp = merchantmap.stream().collect(HashMap::new, (map, ch) -> map.put(ch, map.size()), Map::putAll);
+		//Map<String, Integer> merchantmp = merchantmap.stream().collect(Collectors.toMap(Function.identity(), String::length, (e1, e2) -> e1, LinkedHashMap::new));
+		//System.out.println(merchantmp);
+//Spliterator<String> merchantSpliterator = merchantmap.spliterator();
+//merchantSpliterator.forEachRemaining(System.out::println);
+//if (merchantmap.contains(resultSet.getString("view_name").trim())) 
+//if (merchantVadilate(merchantId, viewName, connection)) {
+	
+	/*
+	 * tableMetaData.setTableName(resultSet.getString(
+	 * "view_name").trim());
+	 * setTableLabel(labels,resultSet.getString("view_name")
+	 * .trim(),tableMetaData);
+	 * tableNames.add(tableMetaData);
+	 */
+//}

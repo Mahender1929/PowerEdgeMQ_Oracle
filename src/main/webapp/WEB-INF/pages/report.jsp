@@ -293,10 +293,10 @@ overflow:hidden;}
 									</p>
 										
 										<div class="hide">
-										<form id="pdfForm" method="post"
-											action="${pageContext.request.contextPath}/createPdf">
-											<input type="hidden" name="pdfJson" id="pdf" value="">
-											<button class="pdfByItext" type="submit">PDF</button>
+										<form id="textForm" method="post"
+											action="${pageContext.request.contextPath}/createText">
+											<input type="hidden" name="textJson" id="text" value="">
+											<button class="text" type="submit">TEXT</button>
 										</form>
 									</div>
 									<div class="hide">

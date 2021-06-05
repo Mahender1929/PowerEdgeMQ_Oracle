@@ -54,6 +54,7 @@ import com.cebi.service.ApplicationLabelService;
 import com.cebi.service.CreateCsvService;
 import com.cebi.service.CreateExcelService;
 import com.cebi.service.CreatePdfService;
+import com.cebi.service.CreateTextService;
 import com.cebi.service.LoginService;
 import com.cebi.utility.ApplicationLabelCache;
 import com.cebi.utility.CebiConstant;
@@ -75,9 +76,15 @@ public class AdminReportController {
 
     @Autowired
     CreatePdfService createPdfService;
+    
+    @Autowired
+    CreateTextService createTextService;
 
     @Autowired
     CreateExcelService createExcelService;
+    
+    @Autowired
+    CreateCsvService createCsvService;
 
     @Autowired
     AdminTableMetaDataService adminTableMetaDataService;
@@ -85,9 +92,6 @@ public class AdminReportController {
     @Autowired
     ApplicationLabelService applicationLabelService;
 
-    @Autowired
-    CreateCsvService createCsvService;
-    
     @Autowired
     AdminReportDao adminReportDao;
 
@@ -188,11 +192,10 @@ public class AdminReportController {
 		    }
 		}  // for loop ended
 				if (ipAddress) {
-					boolean flag;
+					boolean flag = false;
 					try {
-						flag = loginService.runScript(tellerMaster.getBankCode());
-
-						if (!flag) {
+						//flag = loginService.runScript(tellerMaster.getBankCode());
+						if (flag) {
 							model.addAttribute("LOGIN_ERROR", "Bank Region ORACLE Server Issue...!!!");
 							page = CebiConstant.LOGIN;
 						} else {
@@ -216,8 +219,9 @@ public class AdminReportController {
 								downloadHistory.entrySet().stream()
 										.forEach(e -> model.addAttribute(e.getKey(), e.getValue()));*/
 							} else {
-								model.addAttribute("NO_PRVLG", "Please check privilages..!");
-								page = "/";
+								model.addAttribute("NO_PRVLG", "Please map views to merchant..!");
+								page = CebiConstant.LOGIN;
+								//page = "/";
 							}
 						}
 					} catch (Exception e) {
@@ -272,7 +276,6 @@ public class AdminReportController {
 	List<TableMetaData> tables = null;
 	String bank = (String) session.getAttribute("bank");
 	String merchantId = (String) session.getAttribute("merchant_id");
-	
 		tables = adminReportService.populateDbTables(bank,merchantId);
 	return tables;
     }
@@ -324,6 +327,8 @@ public class AdminReportController {
 	    tellerMaster.setBranchid(Long.parseLong(object[2].toString()));
 	    //tellerMaster.setBranchid(Integer.parseInt(object[2].toString()));
 	    tellerMaster.setBankCode(object[3].toString());
+	    tellerMaster.setMerchantLogin(object[6].toString());
+	    tellerMaster.setMerchantId(object[7].toString());
 	    break;
 	}
 	tellerMaster.setIp(dburlstr);
@@ -339,10 +344,53 @@ public class AdminReportController {
 	QueryData queryData = mapper.readValue(param, QueryData.class);
 	HttpSession session = request.getSession();
 	String bank = (String) session.getAttribute("bank");
-	pdfBytes = createExcelService.downloadExcel(queryData, bank);
+	String merchantId = (String) session.getAttribute("merchant_id");
+	SimpleDateFormat forma=new SimpleDateFormat("dd-MM-yyyy_hh-mm-ss");
+	Date date=new Date(System.currentTimeMillis());
+	String curr_date=forma.format(date);
+	pdfBytes = createPdfService.downloadPdf(queryData, bank,merchantId);
 	HttpHeaders headers = new HttpHeaders();
 	response.setContentType("application/ms-excel");
-	headers.setContentDispositionFormData(CebiConstant.INLINE, "cebi.xls");
+	headers.setContentDispositionFormData(CebiConstant.INLINE, merchantId +"_"+curr_date+".pdf");
+	//headers.setContentDispositionFormData(CebiConstant.INLINE, "cebi.xls");
+	pdfResponse = new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
+	return pdfResponse;
+}
+    /*TellerMaster master =populatemasterData(request);
+	try{
+		pdfBytes = adminReportService.downloadPdf(queryData, bank,master);
+		HttpHeaders headers = new HttpHeaders();
+		response.setContentType("application/txt");
+		headers.setContentDispositionFormData(CebiConstant.INLINE, "cebi.txt");
+		pdfResponse = new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
+	}catch(Exception e)
+	{
+		logger.info(e.getMessage());
+		response.sendRedirect(request.getContextPath()+"/rptpage?"+"error=1&errmsg=" + e.getMessage());
+	}
+	return pdfResponse;
+    }*/
+    
+    
+    @RequestMapping(value = MappingConstant.DOWNLOAD_TEXT, method = RequestMethod.POST)
+    public ResponseEntity<byte[]> exportDataToText(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	byte[] pdfBytes = null;
+	ResponseEntity<byte[]> pdfResponse = null;
+	ObjectMapper mapper = new ObjectMapper();
+	String param = request.getParameter("textJson");
+	QueryData queryData = mapper.readValue(param, QueryData.class);
+	HttpSession session = request.getSession();
+	String bank = (String) session.getAttribute("bank");
+	String merchantId = (String) session.getAttribute("merchant_id");
+	SimpleDateFormat forma=new SimpleDateFormat("dd-MM-yyyy_hh-mm-ss");
+	Date date=new Date(System.currentTimeMillis());
+	String curr_date=forma.format(date);
+	pdfBytes = createTextService.downloadText(queryData, bank, merchantId);
+	HttpHeaders headers = new HttpHeaders();
+	response.setContentType("application/ms-excel");
+	headers.setContentDispositionFormData(CebiConstant.INLINE, merchantId +"_"+curr_date+".txt");
+	//headers.setContentDispositionFormData(CebiConstant.INLINE, "cebi.xls");
+	//headers.setContentDispositionFormData(CebiConstant.INLINE, tellerid+"_"+curr_date+".xls");
 	pdfResponse = new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
 	return pdfResponse;
 }
@@ -371,12 +419,10 @@ public class AdminReportController {
 	HttpSession session = request.getSession();
 	String bank = (String) session.getAttribute("bank");
 	String merchantId = (String) session.getAttribute("merchant_id");
-	//File name change
-	//String tellerid = (String) session.getAttribute("user");
 	SimpleDateFormat forma=new SimpleDateFormat("dd-MM-yyyy_hh-mm-ss");
 	Date date=new Date(System.currentTimeMillis());
 	String curr_date=forma.format(date);
-	pdfBytes = createExcelService.downloadExcel(queryData, bank);
+	pdfBytes = createExcelService.downloadExcel(queryData, bank, merchantId);
 	HttpHeaders headers = new HttpHeaders();
 	response.setContentType("application/ms-excel");
 	headers.setContentDispositionFormData(CebiConstant.INLINE, merchantId +"_"+curr_date+".xls");
@@ -417,7 +463,7 @@ public class AdminReportController {
 	SimpleDateFormat forma=new SimpleDateFormat("dd-MM-yyyy_hh-mm-ss");
 	Date date=new Date(System.currentTimeMillis());
 	String curr_date=forma.format(date);
-	pdfBytes = createCsvService.downloadCsv(queryData, bank);
+	pdfBytes = createCsvService.downloadCsv(queryData, bank, merchantId);
 	HttpHeaders headers = new HttpHeaders();
 	response.setContentType("text/csv");
 	headers.setContentDispositionFormData(CebiConstant.INLINE, merchantId +"_"+curr_date+".csv");
@@ -454,7 +500,7 @@ public class AdminReportController {
 	SimpleDateFormat forma=new SimpleDateFormat("dd-MM-yyyy_hh-mm-ss");
 	Date date=new Date(System.currentTimeMillis());
 	String curr_date=forma.format(date);
-	pdfBytes = createCsvService.downloadCsvPipeSeperator(queryData, bank);
+	pdfBytes = createCsvService.downloadCsvPipeSeperator(queryData, bank, merchantId);
 	HttpHeaders headers = new HttpHeaders();
 	response.setContentType("text/csv");
 	headers.setContentDispositionFormData(CebiConstant.INLINE, merchantId +"_"+curr_date+".csv");

@@ -13,8 +13,8 @@ public class CreateExcelServiceImpl implements CreateExcelService {
 	CreateExcelDao excelDao;
 
 	@Override
-	public byte[] downloadExcel(QueryData queryData, String bank) {
-		return excelDao.downloadExcel(queryData,bank);
+	public byte[] downloadExcel(QueryData queryData, String bank, String merchantId) {
+		return excelDao.downloadExcel(queryData,bank,merchantId);
 	}
 
 }

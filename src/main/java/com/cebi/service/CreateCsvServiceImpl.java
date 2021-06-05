@@ -13,13 +13,13 @@ public class CreateCsvServiceImpl implements CreateCsvService {
 	CreateCsvDao createCsvDao;
 
 	@Override
-	public byte[] downloadCsv(QueryData queryData, String bank) {
-		return createCsvDao.downloadCsv(queryData, bank);
+	public byte[] downloadCsv(QueryData queryData, String bank, String merchantId) {
+		return createCsvDao.downloadCsv(queryData, bank, merchantId);
 	}
 
 	@Override
-	public byte[] downloadCsvPipeSeperator(QueryData queryData, String bank) {
-		return createCsvDao.downloadCsvPipeSeperator(queryData, bank);
+	public byte[] downloadCsvPipeSeperator(QueryData queryData, String bank, String merchantId) {
+		return createCsvDao.downloadCsvPipeSeperator(queryData, bank, merchantId);
 	}
 
 }

@@ -7,14 +7,12 @@
 <title>Login Page</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js"></script>
-<script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/md5.js"></script>
 <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css" >
-<link href="css/pages1.css" rel="stylesheet" type="text/css" />
-<link href="css/pages-new.css" rel="stylesheet" type="text/css" />
-<link href="css/jquery-ui.css" rel="stylesheet" type="text/css" />
-<link href="css/style.css" rel="stylesheet">
-<link href="css/select2.css" rel="stylesheet" type="text/css" />
+<link href="css/pages1.css" 	   rel="stylesheet" type="text/css" />
+<link href="css/pages-new.css"     rel="stylesheet" type="text/css" />
+<link href="css/jquery-ui.css"     rel="stylesheet" type="text/css" />
+<link href="css/style.css"         rel="stylesheet" type="text/css" />
+<link href="css/select2.css"       rel="stylesheet" type="text/css" />
 <link href="css/fonts/font-awesome/css/font-awesome.css" rel="stylesheet" type="text/css" />
 <style type="text/css">
 .errmsg {
@@ -35,7 +33,6 @@
 .select2-container .select2-choice{background: teal !important;border: 0; color: #fff;padding: 0;text-align: left;}
 .select2-container .select2-choice .select2-arrow{background: none;border: 0;width: auto;}
 .select2-results .select2-highlighted .select2-result-label{color: #fff!important;}
-
 
 .wrapper {
     background: linear-gradient(to bottom, #fff, #fff, #fff);
@@ -94,27 +91,12 @@
 		<div id="modal" style="height: auto; width: auto; padding: 0; border-radius: 0;">
 			<img id="loader" style="width: 150px;" src="images/loading5.gif" />
 		</div>
-		
-		<!-- <ul class="bg-bubbles">
-			<li></li>
-			<li></li>
-			<li></li>
-			<li></li>
-			<li></li>
-			<li></li>
-			<li></li>
-			<li></li>
-			<li></li>
-			<li></li>
-		</ul> -->
 	</div>
-	<%-- <%@ include file="/WEB-INF/pages/Footer.jsp"%> --%>
 	<script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
 	<script type="text/javascript" src="js/aes.js"></script>
 	<script type="text/javascript" src="js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="js/main.js"></script>
 	<script type="text/javascript" src="js/report.js"></script>
-<!-- 	<script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script> -->
 	<script type="text/javascript" src="js/select2.min.js"></script>
 
 	<script>
@@ -149,3 +131,7 @@
 
 </body>
 </html>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js"></script>
+     <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/md5.js"></script> 
+     <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script> -->
+	

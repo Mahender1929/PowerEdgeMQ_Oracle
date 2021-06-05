@@ -10,6 +10,6 @@ public interface CreateCsvDao {
 	public byte[] downloadCsv(QueryData getTableData, String bank);
 	public byte[] downloadCsvpipe(QueryData getTableData, String bank);*/
 	
-	public byte[] downloadCsv(QueryData queryData,String bank);
-	public byte[] downloadCsvPipeSeperator(QueryData queryData, String bank);
+	public byte[] downloadCsv(QueryData queryData,String bank, String merchantId);
+	public byte[] downloadCsvPipeSeperator(QueryData queryData, String bank, String merchantId);
 }
